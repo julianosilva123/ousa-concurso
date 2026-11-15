@@ -1,167 +1,449 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Treino · Banco de questões</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
-<style>
-:root{--bg:#f3efe6;--fg:#23201a;--muted:#6b6455;--btn:#23201a;--btn-fg:#f3efe6;--line:#cfc7b4;
-box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#14181a;--fg:#ece8dc;--muted:#9a9484;--btn:#ece8dc;--btn-fg:#14181a;--line:#2e3532}}
-:root[data-theme="dark"]{--bg:#14181a;--fg:#ece8dc;--muted:#9a9484;--btn:#ece8dc;--btn-fg:#14181a;--line:#2e3532}
-html{scroll-padding-top:env(safe-area-inset-top,0px)}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--fg);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.45}
-main{max-width:760px;margin:0 auto;padding:18px 14px 28px}
-h1{font-family:"Patrick Hand","Comic Sans MS",cursive;font-size:1.5rem;font-weight:400;margin:0 0 2px}
-h2{font-size:1rem;margin:0 0 8px}
-.sub{color:var(--muted);font-size:.9rem;margin:0 0 14px}
-.kiko{float:right;width:64px;height:64px;border-radius:50%;object-fit:cover;border:3px solid #8a6a45;margin:0 0 6px 12px;box-shadow:0 2px 6px rgba(0,0,0,.3)}
-.ctl{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;margin-bottom:14px;clear:both}
-label{display:flex;flex-direction:column;font-size:.8rem;color:var(--muted);gap:3px}
-button,select{font:inherit;font-size:.95rem;padding:8px 13px;border-radius:8px;border:1px solid var(--btn);background:transparent;color:var(--fg);cursor:pointer}
-button.main{background:var(--btn);color:var(--btn-fg)}
-button:focus-visible,select:focus-visible{outline:3px solid #3b82f6;outline-offset:2px}
-.board{background:radial-gradient(ellipse at 30% 20%,#2a4d3d,#1b3429 70%);border:10px solid #8a6a45;border-radius:10px;padding:18px;color:#f4f1e6;font-family:"Patrick Hand","Comic Sans MS",cursive;box-shadow:inset 0 0 40px rgba(0,0,0,.35)}
-.meta{font-size:1rem;color:#cfe9d6;margin:0 0 8px}
-.q{font-size:clamp(1.25rem,3vw,1.6rem);line-height:1.3;margin:0 0 14px}
-mark{background:#ffe27a;color:#1b3429;padding:0 5px;border-radius:4px}
-.opts{display:grid;gap:8px}
-.opts button{font-family:inherit;font-size:1.15rem;text-align:left;border:2px solid rgba(244,241,230,.5);color:#f4f1e6;border-radius:10px;padding:9px 12px}
-.opts button.ok{border-color:#7be39a;background:rgba(123,227,154,.2)}
-.opts button.bad{border-color:#ff7b7b;background:rgba(255,123,123,.2)}
-.fb{font-size:1.15rem;margin:12px 0 0}
-.nx{margin-top:12px;font-family:inherit;font-size:1.1rem;background:#ffe27a;color:#1b3429;border-color:#ffe27a}
-#st{margin-top:16px;border:1px solid var(--line);border-radius:10px;padding:12px 14px;font-size:.92rem}
-.r{display:flex;justify-content:space-between;gap:10px;padding:3px 0;border-bottom:1px dashed var(--line)}
-#st button{margin-top:10px;font-size:.85rem;padding:5px 10px}
-.note{color:var(--muted);font-size:.85rem;margin-top:14px}
-@media (prefers-reduced-motion:reduce){*{transition:none!important}}
-.back{margin:0 0 6px;font-size:.9rem}.back a{color:var(--muted)}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Treino · Banco de questões · Kiko, o cachorro</title>
+  <style>
+
+    :root {
+      --bg: #f4f6f8;
+      --card: #ffffff;
+      --board: #1b362d;
+      --board-border: #8b5a2b;
+      --text: #1e293b;
+      --muted: #64748b;
+      --accent: #2563eb;
+      --c1: #38bdf8;
+      --c2: #4ade80;
+      --c3: #fbbf24;
+      --c4: #f472b6;
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 900px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .brand {
+      font-weight: 700;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .back-link {
+      text-decoration: none;
+      color: var(--accent);
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    h1 {
+      margin: 0 0 6px;
+      font-size: 1.6rem;
+    }
+
+    .subtitle {
+      margin: 0 0 18px;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      border: 1px solid #cbd5e1;
+      background: #fff;
+      color: var(--text);
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    button:hover {
+      background: #f1f5f9;
+    }
+
+    button.active {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+
+    .board {
+      background: var(--board);
+      border: 8px solid var(--board-border);
+      border-radius: 14px;
+      padding: 24px;
+      color: #f8fafc;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+      position: relative;
+    }
+
+    .board-header {
+      text-align: center;
+      margin-bottom: 20px;
+      border-bottom: 1px dashed rgba(255, 255, 255, 0.25);
+      padding-bottom: 12px;
+    }
+
+    .board-tag {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #cbd5e1;
+    }
+
+    .board-title {
+      font-size: 1.35rem;
+      font-weight: 700;
+      margin: 4px 0 0;
+      color: #ffffff;
+    }
+
+    .analysis-panel {
+      margin-top: 18px;
+      background: var(--card);
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 18px;
+    }
+
+    .analysis-panel h2 {
+      margin: 0 0 8px;
+      font-size: 1.05rem;
+      color: var(--text);
+    }
+
+    .analysis-text {
+      margin: 0;
+      color: #334155;
+      line-height: 1.55;
+      font-size: 0.95rem;
+    }
+
+    .footer-note {
+      margin-top: 14px;
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    .filters {
+      background: var(--card);
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 18px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .field label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: var(--text);
+    }
+
+    select {
+      width: 100%;
+      padding: 9px 10px;
+      border-radius: 8px;
+      border: 1px solid #cbd5e1;
+      font-size: 0.92rem;
+      background: #fff;
+    }
+
+    .question-box {
+      background: var(--card);
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 20px;
+      display: none;
+    }
+
+    .question-box.visible {
+      display: block;
+    }
+
+    .q-meta {
+      font-size: 0.82rem;
+      color: var(--accent);
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .q-text {
+      font-size: 1.05rem;
+      font-weight: 600;
+      margin: 0 0 16px;
+      line-height: 1.5;
+    }
+
+    .alt-btn {
+      display: block;
+      width: 100%;
+      text-align: left;
+      margin-bottom: 10px;
+      padding: 12px 14px;
+      font-weight: 500;
+    }
+
+    .alt-btn.correct {
+      background: #dcfce7;
+      border-color: #22c55e;
+      color: #14532d;
+    }
+
+    .alt-btn.wrong {
+      background: #fee2e2;
+      border-color: #ef4444;
+      color: #7f1d1d;
+    }
+
+    .score-bar {
+      margin-top: 14px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--muted);
+    }
+  </style>
 </head>
 <body>
-<main>
-<img class="kiko" src="data:image/jpeg;base64,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" width="64" height="64" alt="Kiko, o cachorro">
-<p class="back"><a href="index.html">← Início</a></p>
-<h1>Treino · Banco de questões</h1>
-<p class="sub">Escolha a disciplina, sorteie as questões e acompanhe seu placar por tema.</p>
+  <div class="container">
+    <div class="topbar">
+      <span class="brand">Kiko, o cachorro</span>
+      <a href="index.html" class="back-link">← Início</a>
+    </div>
 
-<section id="setup">
-  <div class="ctl">
-    <label>Disciplina<select id="d"></select></label>
-    <label>Tema<select id="t"></select></label>
-    <label>Quantidade<select id="n"><option value="5">5 questões</option><option value="10">10 questões</option><option value="all">Todas</option></select></label>
-    <button class="main" id="go">Sortear e começar</button>
+    <h1>Treino · Banco de questões</h1>
+    <p class="subtitle">Escolha a disciplina, sorteie as questões e acompanhe seu placar por tema.</p>
+
+    <div class="filters">
+      <div class="field">
+        <label for="sel-disc">Disciplina</label>
+        <select id="sel-disc" onchange="updateThemes()">
+          <option value="todas">Todas</option>
+          <option value="Direito Administrativo">Direito Administrativo</option>
+          <option value="Português">Português</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="sel-tema">Tema</label>
+        <select id="sel-tema">
+          <option value="todos">Todos os temas</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="sel-qtd">Quantidade</label>
+        <select id="sel-qtd">
+          <option value="5">5 questões</option>
+          <option value="10">10 questões</option>
+          <option value="todas">Todas</option>
+        </select>
+      </div>
+
+      <div class="field" style="display:flex; align-items:flex-end;">
+        <button class="active" style="width:100%;" onclick="startTraining()">Sortear e começar</button>
+      </div>
+    </div>
+
+    <div class="question-box" id="question-box">
+      <div class="q-meta" id="q-meta"></div>
+      <p class="q-text" id="q-text"></p>
+      <div id="q-alternatives"></div>
+      <div class="score-bar" id="score-bar"></div>
+      <div style="margin-top:12px;">
+        <button id="btn-next-q" style="display:none;" class="active" onclick="nextQuestion()">Próxima questão →</button>
+      </div>
+    </div>
+
+    <p class="footer-note">
+      O placar fica salvo só neste navegador. Revise o conteúdo do banco antes de usar em estudo sério: classificações gramaticais e entendimentos jurídicos podem variar conforme a banca.
+    </p>
   </div>
-  <div id="st"></div>
-</section>
 
-<section id="quiz" hidden><div class="board" id="bd" aria-live="polite"></div></section>
+  <script>
+    const bank = [
+      {
+        disc: "Direito Administrativo",
+        tema: "Distribuição de competências",
+        q: "A criação de uma autarquia por meio de lei específica, transferindo a titularidade e a execução de um serviço público, caracteriza:",
+        options: ["Desconcentração administrativa", "Descentralização por outorga", "Descentralização por delegação", "Avocação hierárquica"],
+        answer: 1
+      },
+      {
+        disc: "Direito Administrativo",
+        tema: "Distribuição de competências",
+        q: "Quando um Ministério distribui competências internamente entre suas secretarias, mantendo vínculo de hierarquia, ocorre:",
+        options: ["Outorga legal", "Delegação contratual", "Desconcentração", "Concessão pública"],
+        answer: 2
+      },
+      {
+        disc: "Direito Administrativo",
+        tema: "Distribuição de competências",
+        q: "Na concessão de transporte coletivo a empresa privada por contrato, o Estado transfere:",
+        options: ["Apenas a execução do serviço", "A titularidade definitiva do serviço", "A criação de órgão público", "O poder legislativo"],
+        answer: 0
+      },
+      {
+        disc: "Português",
+        tema: "Sintaxe",
+        q: "Na frase 'O aluno estudou a matéria', o termo 'a matéria' exerce função de:",
+        options: ["Sujeito simples", "Objeto indireto", "Objeto direto", "Predicativo do sujeito"],
+        answer: 2
+      },
+      {
+        disc: "Português",
+        tema: "Sintaxe",
+        q: "Na oração 'A prova parecia difícil', o verbo 'parecia' classifica-se como:",
+        options: ["Verbo transitivo direto", "Verbo intransitivo", "Verbo de ligação", "Verbo transitivo indireto"],
+        answer: 2
+      }
+    ];
 
-<p class="note">O placar fica salvo só neste navegador. Revise o conteúdo do banco antes de usar em estudo sério: classificações gramaticais e entendimentos jurídicos podem variar conforme a banca. As questões de legislação de Cuiabá foram feitas a partir de textos consultados em novembro de 2026, e as leis podem ter sido alteradas depois: confira sempre na versão oficial atualizada.</p>
-</main>
+    let sessionQuestions = [];
+    let currentIndex = 0;
+    let score = Number(localStorage.getItem("kiko_score") || 0);
+    let answered = false;
 
-<script>
-/* BANCO: [tema, enunciado, [certa, errada1, errada2, errada3], explicação]. A primeira alternativa é sempre a certa; o sorteio embaralha. */
-const BANCO={
-portugues:{nome:"Português · Sintaxe",itens:[
-["Objetos","Em “Os alunos estudaram <mark>a matéria</mark> ontem.”, qual é a função do trecho destacado?",["objeto direto","objeto indireto","adjunto adverbial","predicativo do sujeito"],"Complementa o verbo sem preposição. Teste: estudaram o quê? A matéria."],
-["Adjuntos","Em “Os alunos estudaram a matéria <mark>ontem</mark>.”, o trecho destacado é:",["adjunto adverbial de tempo","objeto direto","agente da passiva","sujeito"],"É termo acessório e indica a circunstância de tempo."],
-["Objetos","Em “O diretor entregou os certificados <mark>aos formandos</mark>.”, o trecho destacado é:",["objeto indireto","objeto direto","adjunto adverbial de modo","complemento nominal"],"Vem com preposição obrigatória (a + os). Teste: entregou a quem?"],
-["Sujeito e predicado","Em “<mark>Os candidatos</mark> chegaram cedo.”, o trecho destacado é:",["sujeito simples","sujeito composto","objeto direto","predicativo do sujeito"],"Há um só núcleo, “candidatos”. Pergunte ao verbo: quem chegou?"],
-["Sujeito e predicado","Em “<mark>Maria e João</mark> viajaram.”, o sujeito é classificado como:",["composto","simples","oculto","indeterminado"],"Tem dois núcleos (Maria e João), por isso é composto."],
-["Voz passiva","Em “A prova foi aplicada <mark>pela banca</mark>.”, o trecho destacado é:",["agente da passiva","objeto indireto","adjunto adverbial de causa","sujeito"],"Indica quem pratica a ação. Na voz ativa: A banca aplicou a prova."],
-["Voz passiva","Em “<mark>A prova</mark> foi aplicada pela banca.”, o trecho destacado é:",["sujeito paciente","sujeito agente","objeto direto","sujeito indeterminado"],"Na voz passiva, o sujeito sofre a ação em vez de praticá-la."],
-["Predicado nominal","Em “Os candidatos estavam <mark>ansiosos</mark>.”, o trecho destacado é:",["predicativo do sujeito","objeto direto","adjunto adnominal","adjunto adverbial de modo"],"Atribui uma qualidade ao sujeito por meio do verbo de ligação “estavam”."]
-]},
-direito:{nome:"Direito Administrativo",itens:[
-["Organização administrativa","A transferência, por lei, da titularidade de um serviço a uma entidade criada para essa finalidade é chamada de:",["outorga","delegação","desconcentração","permissão"],"Na outorga, a lei transfere a titularidade a uma entidade da Administração Indireta."],
-["Organização administrativa","A distribuição de competências entre órgãos da mesma pessoa jurídica é a:",["desconcentração","outorga","delegação","descentralização por serviços"],"Não surge pessoa jurídica nova: é uma divisão interna, com hierarquia."],
-["Organização administrativa","A concessão do transporte coletivo a uma empresa privada, por contrato, é exemplo de:",["delegação","outorga","desconcentração","avocação"],"Na delegação, o particular executa o serviço por contrato ou ato, e o poder público continua titular."],
-["Organização administrativa","Qual entidade da Administração Indireta é criada diretamente por lei?",["autarquia","empresa pública","sociedade de economia mista","fundação pública"],"Conforme o art. 37, XIX, da CF, lei específica cria a autarquia e autoriza a criação das demais."],
-["Atos administrativos","A Administração pode anular seus próprios atos ilegais. Esse poder decorre do princípio da:",["autotutela","razoabilidade","moralidade","impessoalidade"],"É a autotutela, reconhecida na Súmula 473 do STF."],
-["Atos administrativos","A revogação do ato administrativo se baseia em:",["conveniência e oportunidade","ilegalidade","vício de forma","excesso de poder"],"Revogação é por mérito (conveniência e oportunidade). A anulação é por ilegalidade."],
-["Princípios","O princípio segundo o qual a Administração só pode fazer o que a lei permite é o da:",["legalidade","impessoalidade","publicidade","eficiência"],"Para o particular vale o que a lei não proíbe. Para a Administração, só o que a lei autoriza."],
-["Princípios","Quais são os princípios expressos no art. 37, caput, da CF?",["legalidade, impessoalidade, moralidade, publicidade e eficiência","legalidade, razoabilidade, moralidade, publicidade e eficiência","legalidade, impessoalidade, finalidade, publicidade e eficiência","legalidade, motivação, moralidade, publicidade e eficiência"],"São os cinco do conhecido LIMPE. Razoabilidade, finalidade e motivação são princípios implícitos ou de outras leis."]
-]},
-camara:{nome:"Legislação · Câmara de Cuiabá",itens:[
-["Lei Orgânica de Cuiabá","Para ser aprovada, uma emenda à Lei Orgânica do Município exige:",["votação em dois turnos, com interstício mínimo de 10 dias, e aprovação por 2/3 dos membros da Câmara","votação em turno único e aprovação por maioria simples","votação em dois turnos, com interstício mínimo de 30 dias, e maioria absoluta","votação em três turnos e aprovação por 3/5 dos membros da Câmara"],"LOM, art. 24, § 1º."],
-["Lei Orgânica de Cuiabá","A emenda à Lei Orgânica é promulgada pela:",["Mesa da Câmara, com o respectivo número de ordem","Prefeito Municipal","Plenário, por votação nominal","Presidência do Tribunal de Justiça"],"LOM, art. 24, § 2º."],
-["Lei Orgânica de Cuiabá","A Lei Orgânica não poderá ser emendada na vigência de:",["estado de sítio ou de intervenção no Município","recesso da Câmara","período eleitoral","estado de calamidade pública"],"LOM, art. 24, § 3º."],
-["Lei Orgânica de Cuiabá","A iniciativa popular de lei exige moção articulada subscrita por, no mínimo:",["5% do total de eleitores do Município","1% do total de eleitores do Município","10% do total de eleitores do Município","15% do total de eleitores do Município"],"LOM, art. 25."],
-["Lei Orgânica de Cuiabá","As leis complementares somente serão aprovadas se obtiverem:",["maioria absoluta dos votos dos membros da Câmara","maioria simples dos presentes","2/3 dos membros da Câmara","3/5 dos membros da Câmara"],"LOM, art. 26."],
-["Lei Orgânica de Cuiabá","É de iniciativa exclusiva do Prefeito a lei que disponha sobre:",["servidores públicos, seu regime jurídico, provimento de cargos, estabilidade e aposentadoria","o número de Vereadores do Município","a realização de audiências públicas","a convocação de sessões extraordinárias"],"LOM, art. 27, II. Também são do Prefeito: criação de cargos, criação e extinção de Secretarias e matéria orçamentária."],
-["Lei Orgânica de Cuiabá","Decorrido o prazo de 15 dias úteis sem manifestação do Prefeito sobre o projeto aprovado, ocorre:",["sanção tácita","veto tácito","arquivamento do projeto","nova votação obrigatória na Câmara"],"LOM, art. 29, § 1º."],
-["Lei Orgânica de Cuiabá","O veto parcial abrangerá somente o texto integral de:",["artigo, parágrafo, inciso ou alínea","palavras ou expressões isoladas","artigo ou capítulo","título ou seção"],"LOM, art. 29, § 3º."],
-["Regimento Interno","A Mesa Diretora da Câmara Municipal de Cuiabá compõe-se de:",["Presidente, 1º e 2º Vice-Presidentes, 1º e 2º Secretários","Presidente, Vice-Presidente e Secretário","Presidente e dois Vice-Presidentes","Presidente, 1º, 2º e 3º Secretários"],"LOM, art. 15."],
-["Regimento Interno","Segundo o Regimento Interno, a Mesa Diretora é:",["órgão de direção dos trabalhos legislativos e administrativos da Câmara","órgão de controle externo da Câmara","comissão permanente de fiscalização","órgão apenas de direção dos trabalhos legislativos"],"Regimento Interno (Resolução nº 08/2016), art. 33."],
-["Estatuto dos Servidores (LC 93/2003)","O retorno do servidor estável ao cargo anteriormente ocupado, por inabilidade em estágio probatório, é a:",["recondução","reintegração","readaptação","reversão"],"LC 93/2003, art. 35 (redação da LC 472/2019). A recondução também decorre de avaliação de desempenho ou da reintegração do anterior ocupante."],
-["Estatuto dos Servidores (LC 93/2003)","A reinvestidura do servidor estável no cargo anteriormente ocupado, quando invalidada sua demissão por decisão administrativa ou judicial, é a:",["reintegração","recondução","aproveitamento","reversão"],"LC 93/2003, art. 34."],
-["Estatuto dos Servidores (LC 93/2003)","A investidura em cargo de atribuições compatíveis com superveniente limitação da capacidade física ou mental, apurada em inspeção médica, é a:",["readaptação","reversão","recondução","aproveitamento"],"LC 93/2003, art. 32."],
-["Estatuto dos Servidores (LC 93/2003)","O retorno obrigatório à atividade de servidor em disponibilidade, em cargo de atribuições e remuneração compatíveis, é o:",["aproveitamento","reintegração","reversão","recondução"],"LC 93/2003, art. 36."],
-["Estatuto dos Servidores (LC 93/2003)","Na reversão no interesse da Administração, um dos requisitos cumulativos é que a aposentadoria tenha ocorrido nos últimos:",["5 anos anteriores à solicitação","2 anos anteriores à solicitação","10 anos anteriores à solicitação","qualquer prazo, desde que haja vaga"],"LC 93/2003, art. 33, II (redação da LC 490/2021). Outros requisitos: pedido do servidor, aposentadoria voluntária, estabilidade, cargo vago e aptidão atestada pela junta médica."],
-["Plano de Cargos da Câmara (LC 235/2011 e 609/2026)","A Lei Complementar nº 609/2026 reestruturou o quadro de cargos efetivos da Câmara de Cuiabá alterando a:",["Lei Complementar nº 235/2011","Lei Complementar nº 93/2003","Resolução nº 08/2016","Lei Orgânica do Município"],"A LC 609, de 3 de julho de 2026, altera o Plano de Cargos, Carreiras e Vencimentos (LC 235/2011)."],
-["Plano de Cargos da Câmara (LC 235/2011 e 609/2026)","As especialidades de Técnico Legislativo criadas pela LC 609/2026 são:",["Sonorização e Cerimonial","Jornalismo e Psicologia","Tecnologia da Informação e Segurança do Trabalho","Controle Interno e Cerimonial"],"Segundo o edital do concurso, Sonorização e Cerimonial foram criadas pela LC 609/2026."],
-["Plano de Cargos da Câmara (LC 235/2011 e 609/2026)","Os cargos de Técnico Legislativo exigem formação de:",["ensino médio completo","ensino superior completo","ensino fundamental completo","pós-graduação"],"Os cargos de Técnico Legislativo exigem ensino médio completo, conforme a reestruturação feita pela LC 609/2026."],
-["Plano de Cargos da Câmara (LC 235/2011 e 609/2026)","O cargo de Controlador Interno da Câmara (art. 6º-A da LC 235/2011) é de provimento efetivo e exige:",["ensino superior completo, com diploma registrado","ensino médio completo","ensino técnico profissionalizante","apenas ensino fundamental"],"O art. 6º-A, na redação da LC 609/2026, prevê cargos efetivos ocupados por servidores com ensino superior completo."]
-]}
-};
+    function updateThemes() {
+      const disc = document.getElementById("sel-disc").value;
+      const selTema = document.getElementById("sel-tema");
+      selTema.innerHTML = '<option value="todos">Todos os temas</option>';
 
-const $=id=>document.getElementById(id);
-const sh=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
-let S={},Q=null;
-try{S=JSON.parse(localStorage.getItem("treino")||"{}")}catch(e){}
-const save=()=>{try{localStorage.setItem("treino",JSON.stringify(S))}catch(e){}};
+      const themes = [...new Set(bank.filter(item => disc === "todas" || item.disc === disc).map(item => item.tema))];
+      themes.forEach(t => {
+        const opt = document.createElement("option");
+        opt.value = t;
+        opt.textContent = t;
+        selTema.appendChild(opt);
+      });
+    }
 
-$("d").innerHTML=Object.keys(BANCO).map(k=>'<option value="'+k+'">'+BANCO[k].nome+"</option>").join("");
-function fill(){
-  const ts=[...new Set(BANCO[$("d").value].itens.map(x=>x[0]))];
-  $("t").innerHTML='<option value="">Todos os temas</option>'+ts.map(t=>"<option>"+t+"</option>").join("");
-  stats();
-}
-function stats(){
-  const rows=Object.entries(S[$("d").value]||{}).sort((x,y)=>x[1][0]/x[1][1]-y[1][0]/y[1][1]);
-  $("st").innerHTML=rows.length
-    ?"<h2>Seu desempenho (do mais fraco ao mais forte)</h2>"+rows.map(([t,v])=>'<div class="r"><span>'+t+"</span><span>"+Math.round(v[0]/v[1]*100)+"% ("+v[0]+" de "+v[1]+")</span></div>").join("")+'<button id="rs">Zerar placar desta disciplina</button>'
-    :"Seu placar por tema aparece aqui depois do primeiro treino.";
-}
-function start(cfg){
-  const d=cfg.d,t=cfg.t,n=cfg.n;
-  let it=sh(BANCO[d].itens.filter(x=>!t||x[0]===t));
-  if(n!=="all")it=it.slice(0,+n);
-  Q={cfg:cfg,d:d,fila:it,pos:0,ac:0,done:false,pick:-1,opts:sh(it[0][2])};
-  paint();
-}
-function paint(){
-  $("setup").hidden=!!Q;$("quiz").hidden=!Q;
-  if(!Q){stats();return}
-  const bd=$("bd");
-  if(Q.pos>=Q.fila.length){
-    const n=Q.fila.length;
-    bd.innerHTML='<p class="q">Fim do treino! Você acertou '+Q.ac+" de "+n+" ("+Math.round(Q.ac/n*100)+'%).</p><button class="nx" id="again">Treinar de novo</button> <button class="nx" id="back">Voltar</button>';
-    return;
-  }
-  const x=Q.fila[Q.pos],certa=x[2][0];
-  bd.innerHTML='<p class="meta">Questão '+(Q.pos+1)+" de "+Q.fila.length+" · "+x[0]+'</p><p class="q">'+x[1]+'</p><div class="opts">'+Q.opts.map((o,i)=>'<button data-i="'+i+'" class="'+(Q.done&&o===certa?"ok":Q.done&&i===Q.pick?"bad":"")+'"'+(Q.done?" disabled":"")+">"+o+"</button>").join("")+"</div>"
-    +(Q.done?'<p class="fb">'+(Q.opts[Q.pick]===certa?"✓ Correto! ":"✗ Não foi dessa vez. ")+x[3]+'</p><button class="nx" id="nx">'+(Q.pos<Q.fila.length-1?"Próxima":"Ver resultado")+"</button>":"");
-}
-$("bd").onclick=e=>{
-  if(e.target.id==="nx"){Q.pos++;Q.done=false;Q.pick=-1;if(Q.pos<Q.fila.length)Q.opts=sh(Q.fila[Q.pos][2]);paint();return}
-  if(e.target.id==="again"){start(Q.cfg);return}
-  if(e.target.id==="back"){Q=null;paint();return}
-  const b=e.target.closest("[data-i]");if(!b||Q.done)return;
-  const x=Q.fila[Q.pos],i=+b.dataset.i,ok=Q.opts[i]===x[2][0];
-  Q.pick=i;Q.done=true;if(ok)Q.ac++;
-  const s=S[Q.d]=S[Q.d]||{},v=s[x[0]]||[0,0];
-  s[x[0]]=[v[0]+(ok?1:0),v[1]+1];save();paint();
-};
-$("st").onclick=e=>{if(e.target.id==="rs"){delete S[$("d").value];save();stats()}};
-$("go").onclick=()=>start({d:$("d").value,t:$("t").value,n:$("n").value});
-$("d").onchange=fill;
-fill();
-</script>
+    function startTraining() {
+      const disc = document.getElementById("sel-disc").value;
+      const tema = document.getElementById("sel-tema").value;
+      const qtd = document.getElementById("sel-qtd").value;
+
+      let filtered = bank.filter(item =>
+        (disc === "todas" || item.disc === disc) &&
+        (tema === "todos" || item.tema === tema)
+      );
+
+      filtered = filtered.sort(() => Math.random() - 0.5);
+      if (qtd !== "todas") {
+        filtered = filtered.slice(0, Number(qtd));
+      }
+
+      sessionQuestions = filtered;
+      currentIndex = 0;
+
+      if (sessionQuestions.length === 0) {
+        alert("Nenhuma questão encontrada para esse filtro.");
+        return;
+      }
+
+      document.getElementById("question-box").classList.add("visible");
+      renderQuestion();
+    }
+
+    function renderQuestion() {
+      answered = false;
+      document.getElementById("btn-next-q").style.display = "none";
+      const qObj = sessionQuestions[currentIndex];
+
+      document.getElementById("q-meta").textContent = `${qObj.disc} · ${qObj.tema} (${currentIndex + 1}/${sessionQuestions.length})`;
+      document.getElementById("q-text").textContent = qObj.q;
+
+      const altDiv = document.getElementById("q-alternatives");
+      altDiv.innerHTML = "";
+
+      qObj.options.forEach((optText, idx) => {
+        const btn = document.createElement("button");
+        btn.className = "alt-btn";
+        btn.textContent = optText;
+        btn.onclick = () => selectAnswer(idx, btn);
+        altDiv.appendChild(btn);
+      });
+
+      updateScoreDisplay();
+    }
+
+    function selectAnswer(idx, btnEl) {
+      if (answered) return;
+      answered = true;
+
+      const qObj = sessionQuestions[currentIndex];
+      const buttons = document.querySelectorAll(".alt-btn");
+
+      if (idx === qObj.answer) {
+        btnEl.classList.add("correct");
+        score += 1;
+        localStorage.setItem("kiko_score", score);
+      } else {
+        btnEl.classList.add("wrong");
+        buttons[qObj.answer].classList.add("correct");
+      }
+
+      updateScoreDisplay();
+      if (currentIndex + 1 < sessionQuestions.length) {
+        document.getElementById("btn-next-q").style.display = "inline-block";
+      }
+    }
+
+    function nextQuestion() {
+      currentIndex += 1;
+      renderQuestion();
+    }
+
+    function updateScoreDisplay() {
+      document.getElementById("score-bar").textContent = `Acertos acumulados neste navegador: ${score}`;
+    }
+
+    updateThemes();
+  </script>
 </body>
 </html>
