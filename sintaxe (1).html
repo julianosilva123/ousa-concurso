@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lousa de Português · Sintaxe · Kiko, o cachorro</title>
+  <style>
+
+    :root {
+      --bg: #f4f6f8;
+      --card: #ffffff;
+      --board: #1b362d;
+      --board-border: #8b5a2b;
+      --text: #1e293b;
+      --muted: #64748b;
+      --accent: #2563eb;
+      --c1: #38bdf8;
+      --c2: #4ade80;
+      --c3: #fbbf24;
+      --c4: #f472b6;
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 900px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .brand {
+      font-weight: 700;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .back-link {
+      text-decoration: none;
+      color: var(--accent);
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    h1 {
+      margin: 0 0 6px;
+      font-size: 1.6rem;
+    }
+
+    .subtitle {
+      margin: 0 0 18px;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      border: 1px solid #cbd5e1;
+      background: #fff;
+      color: var(--text);
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    button:hover {
+      background: #f1f5f9;
+    }
+
+    button.active {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+
+    .board {
+      background: var(--board);
+      border: 8px solid var(--board-border);
+      border-radius: 14px;
+      padding: 24px;
+      color: #f8fafc;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+      position: relative;
+    }
+
+    .board-header {
+      text-align: center;
+      margin-bottom: 20px;
+      border-bottom: 1px dashed rgba(255, 255, 255, 0.25);
+      padding-bottom: 12px;
+    }
+
+    .board-tag {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #cbd5e1;
+    }
+
+    .board-title {
+      font-size: 1.35rem;
+      font-weight: 700;
+      margin: 4px 0 0;
+      color: #ffffff;
+    }
+
+    .analysis-panel {
+      margin-top: 18px;
+      background: var(--card);
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 18px;
+    }
+
+    .analysis-panel h2 {
+      margin: 0 0 8px;
+      font-size: 1.05rem;
+      color: var(--text);
+    }
+
+    .analysis-text {
+      margin: 0;
+      color: #334155;
+      line-height: 1.55;
+      font-size: 0.95rem;
+    }
+
+    .footer-note {
+      margin-top: 14px;
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    .sentence-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+      margin: 24px 0 12px;
+    }
+
+    .chunk {
+      background: rgba(255, 255, 255, 0.08);
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
+      padding: 12px 16px;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+
+    .chunk:hover {
+      background: rgba(255, 255, 255, 0.14);
+    }
+
+    .chunk-text {
+      font-size: 1.2rem;
+      font-weight: 700;
+      display: block;
+    }
+
+    .chunk-label {
+      display: none;
+      margin-top: 6px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 999px;
+      color: #0f172a;
+    }
+
+    .chunk.revealed .chunk-label {
+      display: inline-block;
+    }
+
+    .chunk.active-pointer {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+    }
+
+    .chunk[data-color="c1"].revealed { border-color: var(--c1); background: rgba(56, 189, 248, 0.15); }
+    .chunk[data-color="c1"] .chunk-label { background: var(--c1); }
+
+    .chunk[data-color="c2"].revealed { border-color: var(--c2); background: rgba(74, 222, 128, 0.15); }
+    .chunk[data-color="c2"] .chunk-label { background: var(--c2); }
+
+    .chunk[data-color="c3"].revealed { border-color: var(--c3); background: rgba(251, 191, 36, 0.15); }
+    .chunk[data-color="c3"] .chunk-label { background: var(--c3); }
+
+    .chunk[data-color="c4"].revealed { border-color: var(--c4); background: rgba(244, 114, 182, 0.15); }
+    .chunk[data-color="c4"] .chunk-label { background: var(--c4); }
+
+    .vareta-bar {
+      text-align: center;
+      font-size: 0.85rem;
+      color: #cbd5e1;
+      min-height: 22px;
+      margin-top: 8px;
+    }
+
+    .quiz-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="topbar">
+      <span class="brand">Kiko, o cachorro</span>
+      <a href="index.html" class="back-link">← Início</a>
+    </div>
+
+    <h1>Lousa de Português · Sintaxe</h1>
+    <p class="subtitle">Análise sintática interativa: toque nas partes da frase e acompanhe a vareta.</p>
+
+    <div class="toolbar">
+      <div class="btn-group">
+        <button id="btn-explorar" class="active" onclick="setMode('explorar')">Explorar</button>
+        <button id="btn-testar" onclick="setMode('testar')">Testar-me</button>
+      </div>
+      <div class="btn-group">
+        <button onclick="nextSentence()">Trocar frase</button>
+        <button onclick="showAll()">Mostrar tudo</button>
+        <button onclick="clearBoard()">Limpar</button>
+      </div>
+    </div>
+
+    <div class="board">
+      <div class="board-header">
+        <div class="board-tag">Frase</div>
+        <div class="board-title" id="sentence-title">Oração 1</div>
+      </div>
+
+      <div class="sentence-row" id="sentence-container"></div>
+      <div class="vareta-bar" id="vareta-status">Toque em um termo da frase acima.</div>
+    </div>
+
+    <div class="analysis-panel">
+      <h2 id="panel-title">Análise sintática</h2>
+      <p class="analysis-text" id="panel-text">
+        Toque nos blocos da frase na lousa para revelar a função sintática de cada termo.
+      </p>
+      <div class="quiz-options" id="quiz-options"></div>
+    </div>
+
+    <p class="footer-note">
+      Sem voz: o ensino acontece pelos sinais na lousa (cores, vareta, rótulos e perguntas). Cada frase é um dado simples, então a IA pode gerar novas aulas no mesmo formato. Revise o conteúdo antes de publicar.
+    </p>
+  </div>
+
+  <script>
+    const sentences = [
+      {
+        title: "Oração 1 · Transitividade verbal",
+        chunks: [
+          { text: "O candidato dedicado", role: "Sujeito simples", color: "c1", desc: "Termo sobre o qual se declara algo. Núcleo: 'candidato'." },
+          { text: "resolveu", role: "Verbo transitivo direto", color: "c2", desc: "Exige complemento sem preposição obrigatória (resolveu o quê?)." },
+          { text: "todas as questões", role: "Objeto direto", color: "c3", desc: "Completa o sentido do verbo transitivo direto sem preposição." },
+          { text: "com calma.", role: "Adjunto adverbial de modo", color: "c4", desc: "Indica a circunstância (o modo) em que a ação verbal ocorreu." }
+        ]
+      },
+      {
+        title: "Oração 2 · Verbo de ligação e predicativo",
+        chunks: [
+          { text: "As regras do edital", role: "Sujeito simples", color: "c1", desc: "Ser sobre o qual se informa uma característica. Núcleo: 'regras'." },
+          { text: "pareciam", role: "Verbo de ligação", color: "c2", desc: "Liga o sujeito a uma característica ou estado." },
+          { text: "bastante claras.", role: "Predicativo do sujeito", color: "c3", desc: "Atribui uma qualidade ao sujeito por meio do verbo de ligação." }
+        ]
+      }
+    ];
+
+    let sentenceIdx = 0;
+    let mode = "explorar";
+    let quizChunkIdx = 0;
+
+    function renderSentence() {
+      const current = sentences[sentenceIdx];
+      document.getElementById("sentence-title").textContent = current.title;
+      const container = document.getElementById("sentence-container");
+      container.innerHTML = "";
+
+      current.chunks.forEach((chunk, index) => {
+        const div = document.createElement("div");
+        div.className = "chunk";
+        div.dataset.index = index;
+        div.dataset.color = chunk.color;
+        div.innerHTML = `<span class="chunk-text">${chunk.text}</span><span class="chunk-label">${chunk.role}</span>`;
+        div.onclick = () => handleChunkClick(index);
+        container.appendChild(div);
+      });
+
+      clearBoard();
+    }
+
+    function handleChunkClick(index) {
+      if (mode === "testar") {
+        checkQuiz(index);
+        return;
+      }
+
+      const current = sentences[sentenceIdx];
+      const chunkData = current.chunks[index];
+
+      document.querySelectorAll(".chunk").forEach((el, i) => {
+        el.classList.remove("active-pointer");
+        if (i === index) {
+          el.classList.add("revealed", "active-pointer");
+        }
+      });
+
+      document.getElementById("vareta-status").textContent = `📍 Vareta apontando para: "${chunkData.text}"`;
+      document.getElementById("panel-title").textContent = chunkData.role;
+      document.getElementById("panel-text").textContent = chunkData.desc;
+    }
+
+    function showAll() {
+      mode = "explorar";
+      updateButtons();
+      document.getElementById("quiz-options").innerHTML = "";
+      document.querySelectorAll(".chunk").forEach(el => {
+        el.classList.add("revealed");
+        el.classList.remove("active-pointer");
+      });
+      document.getElementById("vareta-status").textContent = "Todos os rótulos revelados na lousa.";
+      document.getElementById("panel-title").textContent = "Análise sintática completa";
+      document.getElementById("panel-text").textContent = "Observe as cores de cada função sintática na frase.";
+    }
+
+    function clearBoard() {
+      document.querySelectorAll(".chunk").forEach(el => {
+        el.classList.remove("revealed", "active-pointer");
+      });
+      document.getElementById("quiz-options").innerHTML = "";
+
+      if (mode === "explorar") {
+        document.getElementById("vareta-status").textContent = "Toque em um termo da frase acima.";
+        document.getElementById("panel-title").textContent = "Análise sintática";
+        document.getElementById("panel-text").textContent = "Toque nas partes da frase na lousa para analisar.";
+      } else {
+        startQuiz();
+      }
+    }
+
+    function setMode(newMode) {
+      mode = newMode;
+      updateButtons();
+      clearBoard();
+    }
+
+    function updateButtons() {
+      document.getElementById("btn-explorar").classList.toggle("active", mode === "explorar");
+      document.getElementById("btn-testar").classList.toggle("active", mode === "testar");
+    }
+
+    function nextSentence() {
+      sentenceIdx = (sentenceIdx + 1) % sentences.length;
+      quizChunkIdx = 0;
+      renderSentence();
+    }
+
+    function startQuiz() {
+      const current = sentences[sentenceIdx];
+      const target = current.chunks[quizChunkIdx];
+      document.getElementById("vareta-status").textContent = `Pergunta ${quizChunkIdx + 1} de ${current.chunks.length}`;
+      document.getElementById("panel-title").textContent = "Modo Testar-me";
+      document.getElementById("panel-text").textContent = `Toque na lousa no termo que exerce a função de: "${target.role}".`;
+    }
+
+    function checkQuiz(selectedIndex) {
+      const current = sentences[sentenceIdx];
+      const target = current.chunks[quizChunkIdx];
+      const el = document.querySelector(`.chunk[data-index="${selectedIndex}"]`);
+
+      if (selectedIndex === quizChunkIdx) {
+        el.classList.add("revealed", "active-pointer");
+        document.getElementById("panel-title").textContent = "✅ Acertou!";
+        document.getElementById("panel-text").textContent = target.desc;
+
+        const btn = document.createElement("button");
+        btn.className = "active";
+        btn.textContent = "Próximo termo →";
+        btn.onclick = () => {
+          quizChunkIdx = (quizChunkIdx + 1) % current.chunks.length;
+          clearBoard();
+        };
+        const opts = document.getElementById("quiz-options");
+        opts.innerHTML = "";
+        opts.appendChild(btn);
+      } else {
+        document.getElementById("panel-title").textContent = "❌ Não é esse termo";
+        document.getElementById("panel-text").textContent = `Tente encontrar na frase o termo com função de "${target.role}".`;
+      }
+    }
+
+    renderSentence();
+  </script>
+</body>
+</html>
