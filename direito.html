@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lousa virtual · Concurso</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f3efe6;--fg:#23201a;--muted:#6b6455;--btn:#23201a;--btn-fg:#f3efe6;--line:#cfc7b4;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#14181a;--fg:#ece8dc;--muted:#9a9484;--btn:#ece8dc;--btn-fg:#14181a;--line:#2e3532}}
+:root[data-theme="dark"]{--bg:#14181a;--fg:#ece8dc;--muted:#9a9484;--btn:#ece8dc;--btn-fg:#14181a;--line:#2e3532}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.45}
+main{max-width:1000px;margin:0 auto;padding:18px 14px 28px}
+h1{font-family:"Patrick Hand","Comic Sans MS",cursive;font-size:1.5rem;font-weight:400;margin:0 0 2px}
+.sub{color:var(--muted);font-size:.9rem;margin:0 0 14px}
+.board{position:relative;background:radial-gradient(ellipse at 30% 20%,#2a4d3d,#1b3429 70%);border:10px solid #8a6a45;border-radius:10px;padding:22px 18px 20px;color:#f4f1e6;font-family:"Patrick Hand","Comic Sans MS",cursive;overflow:hidden;box-shadow:inset 0 0 40px rgba(0,0,0,.35)}
+.title{text-align:center;font-size:clamp(1.4rem,3.4vw,2rem);margin:0 0 14px;color:#ffe27a}
+.cols{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.card{border:2px dashed rgba(244,241,230,.35);border-radius:12px;padding:12px 14px;min-height:190px}
+.card h3{margin:0 0 8px;font-weight:400;font-size:clamp(1.25rem,2.6vw,1.6rem)}
+.card p{margin:0 0 8px;font-size:clamp(1.05rem,2vw,1.25rem);line-height:1.25}
+.card b{color:#fff;border-bottom:2px solid currentColor}
+.c1 h3,.c1 b{color:#8ecbff}.c2 h3,.c2 b{color:#ffe27a}.c3 h3,.c3 b{color:#ff9fb2}
+.ex{opacity:.85;font-size:1rem!important;border-top:1px solid rgba(244,241,230,.25);padding-top:6px}
+.tip{margin:14px 0 0;text-align:center;font-size:clamp(1.05rem,2.1vw,1.3rem);color:#cfe9d6}
+.h{opacity:0;transform:translateY(5px);transition:opacity .5s,transform .5s,background .3s}
+.h.on{opacity:1;transform:none}
+.h.cur{background:rgba(255,226,122,.16);border-radius:6px;box-shadow:0 0 0 5px rgba(255,226,122,.16)}
+#ptr{position:absolute;left:0;top:0;width:0;height:0;opacity:0;pointer-events:none;z-index:5;transition:transform .8s cubic-bezier(.4,.1,.2,1),opacity .3s}
+#ptr::before{content:"";position:absolute;left:-7px;top:-7px;width:14px;height:14px;border-radius:50%;background:#ffe27a;box-shadow:0 0 12px 4px rgba(255,226,122,.7)}
+.stick{position:absolute;left:-3px;top:0;width:6px;height:120px;border-radius:3px;background:linear-gradient(#e8c98f,#8a6a45);transform-origin:50% 0;transform:rotate(-38deg);box-shadow:2px 2px 4px rgba(0,0,0,.4)}
+#ptr.flip .stick{transform:rotate(38deg)}
+.cap{min-height:3.2em;margin:14px 2px 8px;font-size:1.1rem}
+.bar{height:5px;background:var(--line);border-radius:3px;overflow:hidden;margin-bottom:12px}
+.bar i{display:block;height:100%;width:0;background:var(--btn);transition:width .4s}
+.ctl{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+button,select{font:inherit;font-size:.95rem;padding:9px 14px;border-radius:8px;border:1px solid var(--btn);background:transparent;color:var(--fg);cursor:pointer}
+button.main{background:var(--btn);color:var(--btn-fg);min-width:112px}
+button:focus-visible,select:focus-visible{outline:3px solid #3b82f6;outline-offset:2px}
+.note{color:var(--muted);font-size:.85rem;margin-top:16px;max-width:70ch}
+@media (max-width:700px){.cols{grid-template-columns:1fr}.card{min-height:0}.stick{height:80px}}
+@media (prefers-reduced-motion:reduce){#ptr,.h{transition:none}}
+.kiko{float:right;width:64px;height:64px;border-radius:50%;object-fit:cover;border:3px solid #8a6a45;margin:0 0 6px 12px;box-shadow:0 2px 6px rgba(0,0,0,.3)}
+.back{margin:0 0 6px;font-size:.9rem}.back a{color:var(--muted)}
+</style>
+</head>
+<body>
+<main>
+<img class="kiko" src="data:image/jpeg;base64,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" width="64" height="64" alt="Kiko, o cachorro">
+<p class="back"><a href="index.html">← Início</a></p>
+<h1>Lousa virtual de concurso</h1>
+<p class="sub">Direito Administrativo · Distribuição de competências</p>
+
+<div class="board" id="board">
+  <div id="t" class="title h">Distribuição de competências</div>
+  <div class="cols">
+    <div class="card c1">
+      <h3 id="d0" class="h">Desconcentração</h3>
+      <p id="d1" class="h">Dentro da <b>mesma pessoa jurídica</b></p>
+      <p id="d2" class="h">Distribui tarefas entre <b>órgãos</b>, com hierarquia</p>
+      <p id="d3" class="h ex">Ex.: Ministério da Saúde → secretarias</p>
+    </div>
+    <div class="card c2">
+      <h3 id="o0" class="h">Outorga</h3>
+      <p id="o1" class="h">Feita por <b>lei</b></p>
+      <p id="o2" class="h">Transfere a <b>titularidade</b></p>
+      <p id="o3" class="h">Para a <b>Administração Indireta</b></p>
+      <p id="o4" class="h ex">Ex.: autarquia de água e esgoto (SAAE)</p>
+    </div>
+    <div class="card c3">
+      <h3 id="g0" class="h">Delegação</h3>
+      <p id="g1" class="h">Feita por <b>contrato ou ato</b></p>
+      <p id="g2" class="h">Transfere só a <b>execução</b></p>
+      <p id="g3" class="h ex">Ex.: concessão de ônibus a empresa privada</p>
+    </div>
+  </div>
+  <p id="m" class="tip h">Macete: mesma pessoa → desconcentração · lei + titularidade → outorga · contrato + execução → delegação</p>
+  <div id="ptr"><div class="stick"></div></div>
+</div>
+
+<p class="cap" id="cap" aria-live="polite">Toque em Iniciar para começar a aula.</p>
+<div class="bar"><i id="prog"></i></div>
+<div class="ctl">
+  <button id="prev" aria-label="Passo anterior">◀ Voltar</button>
+  <button id="play" class="main">▶ Iniciar</button>
+  <button id="next" aria-label="Próximo passo">Avançar ▶</button>
+  <label>Velocidade
+    <select id="spd"><option value="0.8">0,8×</option><option value="1" selected>1×</option><option value="1.25">1,25×</option><option value="1.5">1,5×</option></select>
+  </label>
+</div>
+<p class="note">Protótipo com uma aula pronta. A voz vem do seu navegador (em português, se houver uma instalada). No app completo, a IA gera o roteiro e o esquema de qualquer tema e esta mesma lousa os anima.</p>
+</main>
+
+<script>
+const STEPS=[
+["t","Hoje vamos ver três formas de distribuir competências dentro da Administração Pública."],
+["d0","Começando pela desconcentração."],
+["d1","Ela acontece dentro da mesma pessoa jurídica."],
+["d2","Há só distribuição de tarefas entre órgãos, com hierarquia."],
+["d3","Por exemplo: o Ministério da Saúde dividindo suas funções em secretarias."],
+["o0","Agora, a outorga."],
+["o1","Ela é feita por lei."],
+["o2","Transfere a titularidade do serviço."],
+["o3","Para uma entidade da Administração Indireta, criada ou autorizada por lei."],
+["o4","Exemplo: uma autarquia de água e esgoto, como o SAAE."],
+["g0","Por fim, a delegação."],
+["g1","Ela é feita por contrato ou ato."],
+["g2","Transfere só a execução. O poder público continua sendo o titular."],
+["g3","Exemplo: a concessão do transporte coletivo a uma empresa de ônibus."],
+["m","Para fixar: desconcentração, mesma pessoa jurídica. Outorga, lei e titularidade. Delegação, contrato e execução."]
+];
+const $=id=>document.getElementById(id);
+const board=$("board"),ptr=$("ptr"),cap=$("cap"),playBtn=$("play");
+let i=-1,playing=false,tok=0,speed=1,voice=null;
+const hasTTS="speechSynthesis" in window;
+function pickVoice(){if(!hasTTS)return;const v=speechSynthesis.getVoices();voice=v.find(x=>/pt-BR/i.test(x.lang))||v.find(x=>/^pt/i.test(x.lang))||null}
+if(hasTTS){try{speechSynthesis.onvoiceschanged=pickVoice;pickVoice()}catch(e){}}
+
+function movePtr(){
+  if(i<0){ptr.style.opacity=0;return}
+  const b=board.getBoundingClientRect(),r=$(STEPS[i][0]).getBoundingClientRect();
+  const x=r.left-b.left+Math.min(r.width*.7,r.width-10),y=r.top-b.top+r.height/2;
+  ptr.classList.toggle("flip",x>b.width*.55);
+  ptr.style.opacity=1;
+  ptr.style.transform="translate("+x+"px,"+y+"px)";
+}
+function render(){
+  STEPS.forEach(([id],k)=>{const el=$(id);el.classList.toggle("on",k<=i);el.classList.toggle("cur",k===i)});
+  cap.textContent=i<0?"Toque em Iniciar para começar a aula.":STEPS[i][1];
+  $("prog").style.width=((i+1)/STEPS.length*100)+"%";
+  movePtr();
+}
+function stopSpeech(){tok++;if(hasTTS)try{speechSynthesis.cancel()}catch(e){}}
+function speak(){
+  const my=++tok,txt=STEPS[i][1];let done=false;
+  const next=()=>{if(done||my!==tok||!playing)return;done=true;setTimeout(()=>{if(my===tok&&playing)advance()},450/speed)};
+  if(hasTTS){
+    try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(txt);u.lang="pt-BR";if(voice)u.voice=voice;u.rate=speed;u.onend=next;u.onerror=next;speechSynthesis.speak(u)}catch(e){}
+  }
+  setTimeout(next,txt.length*110/speed+2200);
+}
+function advance(){
+  if(i<STEPS.length-1){i++;render();speak()}
+  else{playing=false;stopSpeech();label()}
+}
+function label(){playBtn.textContent=playing?"⏸ Pausar":(i>=STEPS.length-1?"↺ Rever":"▶ "+(i<0?"Iniciar":"Continuar"))}
+function go(k){
+  i=Math.max(-1,Math.min(STEPS.length-1,k));render();
+  if(playing&&i>=0)speak();else stopSpeech();
+  label();
+}
+playBtn.onclick=()=>{
+  if(playing){playing=false;stopSpeech();label();return}
+  playing=true;
+  if(i>=STEPS.length-1)i=-1;
+  label();
+  if(i<0)advance();else speak();
+};
+$("prev").onclick=()=>go(i-1);
+$("next").onclick=()=>go(i+1);
+$("spd").onchange=e=>{speed=parseFloat(e.target.value)};
+addEventListener("resize",movePtr);
+render();label();
+</script>
+</body>
+</html>
