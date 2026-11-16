@@ -41,6 +41,7 @@ mark{background:#ffe27a;color:#1b3429;padding:0 5px;border-radius:4px}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 .back{margin:0 0 6px;font-size:.9rem}.back a{color:var(--muted)}
 select,option{background:var(--bg);color:var(--fg)}
+details{margin:6px 0;border:1px solid var(--line);border-radius:8px;padding:6px 10px}summary{cursor:pointer}details p{margin:6px 0 2px}#rsm{margin-top:14px;font-size:.95rem}.board details{border-color:rgba(244,241,230,.35);margin-top:12px;font-size:1.05rem}
 </style>
 </head>
 <body>
@@ -57,6 +58,7 @@ select,option{background:var(--bg);color:var(--fg)}
     <label>Quantidade<select id="n"><option value="5">5 questões</option><option value="10">10 questões</option><option value="all">Todas</option></select></label>
     <button class="main" id="go">Sortear e começar</button>
   </div>
+  <div id="rsm"></div>
   <div id="st"></div>
 </section>
 
@@ -127,6 +129,89 @@ mt:{nome:"Geografia e História de Mato Grosso",itens:[
 ["Formação étnica","Qual alternativa descreve a formação da população mato-grossense?",["mistura de indígenas, negros, europeus, nordestinos e sulistas","predomínio absoluto de imigrantes asiáticos","população formada só por migrantes europeus do século XX","população exclusivamente indígena"],"Além dos povos indígenas que já ocupavam a região, o estado recebeu migrantes de várias origens, entre eles sulistas na década de 1970."]
 ]}
 };
+BANCO.portugues.nome="Português";
+BANCO.portugues.itens.push(
+["Crase","Assinale a frase em que o uso da crase está correto.",["Entreguei o documento à diretora.","Chegamos à tempo da reunião.","Vou à pé para o trabalho.","Falei à todos os presentes."],"Há crase quando o verbo pede “a” e a palavra feminina aceita “a”. Antes de masculino (a pé, a tempo) e de pronomes indefinidos como “todos”, não há."],
+["Crase","Em qual frase o sinal de crase é facultativo?",["Entreguei o livro à minha irmã.","Cheguei à escola cedo.","Refiro-me à situação descrita.","Voltei à cidade onde nasci."],"É facultativo antes de pronome possessivo feminino singular, antes de nome próprio feminino de pessoa e depois de “até”."],
+["Concordância","Assinale a frase com a concordância correta.",["Faz dois anos que ele se mudou.","Fazem dois anos que ele se mudou.","Houveram muitos problemas.","Existe muitas dúvidas."],"“Fazer” indicando tempo e “haver” no sentido de existir são impessoais e ficam no singular. “Existir” concorda com o sujeito: existem dúvidas."],
+["Concordância","Assinale a frase correta quanto à concordância com o pronome “se”.",["Alugam-se casas nesta rua.","Aluga-se casas nesta rua.","Precisam-se de funcionários.","Tratam-se de problemas antigos."],"Com verbo transitivo direto, o “se” indica voz passiva e o verbo concorda com o sujeito. Com verbo que pede preposição (precisar de, tratar de), o verbo fica no singular."],
+["Regência","Assinale a frase em que a regência verbal segue a norma-padrão.",["Todos assistiram ao discurso do prefeito.","Todos assistiram o discurso do prefeito.","Prefiro mais ler do que escrever.","Os alunos obedecem as normas da escola."],"“Assistir” no sentido de ver pede “a”. “Preferir” pede “a” (prefiro ler a escrever). “Obedecer” também pede “a”: obedecem às normas."],
+["Regência","Qual frase está de acordo com a norma-padrão?",["Ele aspira ao cargo de diretor.","Ele aspira o cargo de diretor.","Ele prefere o cargo de diretor do que o de gerente.","Ele namora com a filha do diretor."],"“Aspirar” no sentido de desejar pede “a”. “Preferir” não aceita “do que”. “Namorar” não pede preposição."],
+["Pontuação","Em qual frase a vírgula está empregada corretamente?",["Os candidatos, que chegaram cedo, foram atendidos primeiro.","O prefeito, anunciou novas obras.","Os alunos estudaram, a matéria ontem.","Ela disse, que viria."],"Não se separa o sujeito do verbo, nem o verbo do complemento. A oração explicativa (“que chegaram cedo”) fica entre vírgulas."],
+["Pontuação","A vírgula é obrigatória para isolar:",["o aposto explicativo","o sujeito do verbo","o verbo do objeto direto","a oração subordinada substantiva objetiva direta"],"Devem ser isolados o aposto explicativo, o vocativo, o adjunto adverbial deslocado e as orações explicativas."],
+["Acentuação e ortografia","Em qual alternativa todas as palavras estão corretamente acentuadas?",["saúde, juízo, baú","saude, juizo, bau","heroi, ideia, assembléia","jibóia, platéia, idéia"],"“I” e “u” tônicos em hiato recebem acento (saúde, juízo, baú). Depois da reforma, ideia, jiboia e assembleia perderam o acento, mas herói continua acentuado."],
+["Acentuação e ortografia","Assinale a frase em que “por que” está empregado corretamente.",["Não sei por que ele faltou.","Não sei porque ele faltou.","Ele faltou por que estava doente.","Explique o por que da falta."],"“Por que” aparece em perguntas diretas e indiretas. “Porque” introduz resposta. “Porquê” é substantivo: o porquê da falta."],
+["Pronomes e colocação","Assinale a colocação pronominal adequada à norma-padrão.",["Ninguém me avisou da mudança.","Me avise quando chegar.","Nunca avisou-me da mudança.","Quem disse-me isso?"],"Palavras negativas (ninguém, nunca) e interrogativas (quem) atraem o pronome, a chamada próclise. Evite iniciar a frase com pronome oblíquo."],
+["Interpretação e coesão","Em “O prefeito anunciou obras, mas poucas foram iniciadas”, a conjunção “mas” expressa:",["oposição","explicação","conclusão","adição"],"“Mas”, “porém” e “contudo” são adversativas: contrapõem ideias. “Portanto” e “logo” indicam conclusão."],
+["Interpretação e coesão","Em “Os servidores pediram aumento, e o prefeito lhes respondeu”, o pronome “lhes” retoma:",["os servidores","o prefeito","o aumento","as obras"],"Para interpretar, descubra a quem o pronome se refere: “lhes” é plural e substitui “aos servidores”, termo já citado."]
+);
+BANCO.direito.itens.push(
+["Atos administrativos","A presunção de legitimidade significa que o ato administrativo:",["é considerado legal e verdadeiro até prova em contrário","só produz efeitos após decisão judicial","pode ser praticado sem observar a lei","não pode ser anulado"],"É um atributo do ato: ele vale desde a edição, e quem o contesta deve provar o vício."],
+["Atos administrativos","A imperatividade permite que a Administração:",["imponha obrigações ao particular, mesmo sem a concordância dele","aja somente com o consentimento do particular","revogue o ato sem qualquer motivo","execute o ato apenas com autorização judicial"],"Imperatividade é o poder de impor, de forma unilateral, obrigações a terceiros."],
+["Atos administrativos","O ato administrativo ilegal pode ser anulado:",["pela própria Administração ou pelo Judiciário","somente pelo Judiciário","somente pelo chefe do Executivo","somente pelo Legislativo"],"A Administração anula seus atos ilegais (autotutela, Súmula 473 do STF), e o Judiciário também controla a legalidade."],
+["Poderes da Administração","O poder que permite ordenar, fiscalizar, rever atos de subordinados, delegar e avocar é o:",["hierárquico","disciplinar","regulamentar","de polícia"],"O poder hierárquico organiza a subordinação entre órgãos e agentes."],
+["Poderes da Administração","O poder de polícia administrativa consiste em:",["limitar direitos individuais em favor do interesse público","punir servidores por infrações funcionais","editar regulamentos para a fiel execução das leis","distribuir competências entre órgãos"],"Exemplos: fiscalização sanitária e de trânsito. Punir servidores é poder disciplinar, e regulamentar é editar normas."],
+["Poderes da Administração","O poder usado para apurar e punir infrações funcionais de servidores é o:",["disciplinar","regulamentar","de polícia","hierárquico"],"O poder disciplinar apura e pune faltas de servidores e de outros ligados à Administração."],
+["Organização administrativa","Qual entidade da Administração Indireta tem personalidade jurídica de direito público?",["autarquia","sociedade de economia mista","empresa pública","associação civil"],"A autarquia tem direito público. Empresa pública e sociedade de economia mista têm direito privado."],
+["Princípios","A obrigação de divulgar os atos oficiais, salvo sigilo previsto em lei, decorre do princípio da:",["publicidade","legalidade","impessoalidade","eficiência"],"A publicidade dá transparência e permite o controle dos atos pela sociedade."]
+);
+BANCO.camara.itens.push(
+["Lei Orgânica de Cuiabá","Para projetos de sua iniciativa considerados relevantes, o Prefeito pode solicitar urgência. O prazo para a Câmara apreciá-los é de:",["45 dias","15 dias","30 dias","90 dias"],"LOM, art. 28. Esgotado o prazo sem deliberação, o projeto é incluído na ordem do dia e tranca a pauta, exceto veto e leis orçamentárias."],
+["Lei Orgânica de Cuiabá","O Prefeito que vetar um projeto deve comunicar os motivos ao Presidente da Câmara em até:",["48 horas","24 horas","5 dias úteis","15 dias úteis"],"LOM, art. 29, § 2º. O prazo para vetar é de 15 dias úteis, e os motivos são comunicados em 48 horas."],
+["Lei Orgânica de Cuiabá","O veto é apreciado pela Câmara no prazo de:",["15 dias, em uma única discussão e votação","30 dias, em dois turnos","45 dias, em turno único","10 dias, em dois turnos"],"LOM, art. 29, § 4º."],
+["Lei Orgânica de Cuiabá","O processo legislativo municipal compreende a elaboração de:",["emendas à Lei Orgânica, leis complementares, leis ordinárias, resoluções e decretos legislativos","leis ordinárias, medidas provisórias e leis delegadas","emendas, leis complementares e decretos do Executivo","apenas leis ordinárias e complementares"],"LOM, art. 23."],
+["Lei Orgânica de Cuiabá","Cada legislatura da Câmara Municipal tem duração de:",["quatro anos, com dois períodos legislativos em cada sessão","dois anos, com um período por sessão","quatro anos, com três períodos por sessão","seis anos, com dois períodos por sessão"],"LOM, art. 6º, § 1º."],
+["Estatuto dos Servidores (LC 93/2003)","Na recondução, se o cargo de origem do servidor já estiver provido, ele será:",["aproveitado em outro cargo","exonerado","aposentado compulsoriamente","reintegrado ao cargo anterior"],"LC 93/2003, art. 35, parágrafo único (aplicam-se as regras de aproveitamento dos arts. 36 e 37)."]
+);
+BANCO.mt.itens.push(
+["Geopolítica","No contexto regional brasileiro, o território de Mato Grosso é dividido entre:",["Amazônia Legal, ao norte, e Centro-Sul, ao sul","Nordeste, ao norte, e Sudeste, ao sul","Zona da Mata, a leste, e Agreste, a oeste","Semiárido, ao norte, e litoral, ao sul"],"O norte está na Amazônia Legal, e o sul pertence ao Centro-Sul do país."],
+["Geopolítica","O Tratado de Madri (1750) é importante para a história de Mato Grosso porque:",["reconheceu a ocupação feita pelos bandeirantes na região","criou o estado de Mato Grosso do Sul","dividiu o território com a Bolívia","transferiu a capital para Cuiabá"],"Reconheceu o avanço bandeirante, embora a região já fosse habitada por povos como os Parecis."],
+["Aspectos político-administrativos","Pela divisão regional do IBGE, Mato Grosso tem cinco regiões intermediárias. Qual das opções NÃO é uma delas?",["Alta Floresta","Barra do Garças","Cáceres","Sinop"],"As cinco são Cuiabá, Cáceres, Rondonópolis, Barra do Garças e Sinop."],
+["Ocupação do território","Na década de 1970, a ocupação do norte e do Cerrado de Mato Grosso foi impulsionada por:",["migrantes do Sul e Sudeste, com apoio do governo federal e de colonizadoras","imigrantes europeus recém-chegados ao país","migrantes do Norte pela navegação fluvial","moradores de Cuiabá"],"O governo federal, o Incra e empresas e cooperativas de colonização trouxeram sulistas para os chamados vazios demográficos."],
+["Fronteira agrícola e programas","Na ocupação agrícola do Cerrado, a sequência típica de culturas foi:",["arroz e pastagem, depois soja, milho e algodão","algodão e depois café","cana-de-açúcar e depois cacau","trigo e depois arroz"],"Começou com arroz e pastagem para abrir a terra. Depois vieram as culturas de grãos."],
+["Aspectos físicos e domínios naturais","Por que a atividade agropecuária nos planaltos pode afetar o Pantanal?",["porque as nascentes dos rios ficam nos planaltos que cercam a planície","porque o Pantanal fica acima dos planaltos","porque não há ligação entre eles","porque a planície não recebe água dos rios"],"Os rios nascem no planalto e abastecem a planície inundável, por isso o que acontece no planalto chega ao Pantanal."],
+["Aspectos socioeconômicos","Segundo o Censo 2022, a população de Mato Grosso era de cerca de:",["3,66 milhões de habitantes","1,2 milhão de habitantes","7 milhões de habitantes","10 milhões de habitantes"],"É um estado grande (cerca de 903 mil km²) e com baixa densidade demográfica."]
+);
+const RESUMOS={
+portugues:{
+"Objetos":"Objeto direto não tem preposição (estudou o quê? a matéria). Objeto indireto tem preposição (entregou a quem? aos formandos).",
+"Adjuntos":"O adjunto adverbial indica circunstância (tempo, modo, lugar, causa) e é termo acessório: pode mudar de lugar na frase.",
+"Sujeito e predicado":"Para achar o sujeito, pergunte ao verbo: quem? Simples tem um núcleo; composto tem dois ou mais.",
+"Voz passiva":"Na voz passiva, o sujeito sofre a ação, e o agente da passiva (por, pelo, pela) é quem a pratica.",
+"Predicado nominal":"O verbo de ligação (ser, estar, parecer) não indica ação: liga o sujeito a uma característica, o predicativo.",
+"Crase":"Crase é a junção da preposição “a” com o artigo “a”. Teste: troque a palavra feminina por uma masculina. Se ficar “ao”, há crase. Não há crase antes de masculino, de verbo, de pronome indefinido (todos, cada) nem em “a pé” e “a tempo”.",
+"Concordância":"O verbo concorda com o sujeito. Fazer (tempo) e haver (existir) são impessoais: ficam no singular. Com “se”: se o verbo é transitivo direto, concorda com o sujeito (alugam-se casas); se pede preposição, fica no singular (precisa-se de funcionários).",
+"Regência":"Regência é a relação do verbo com o complemento. Pedem “a”: assistir (ver), aspirar (desejar), obedecer, preferir (prefiro X a Y) e chegar. Namorar não pede preposição.",
+"Pontuação":"Não separe com vírgula o sujeito do verbo nem o verbo do complemento. Use vírgula para isolar aposto, vocativo, adjunto adverbial deslocado e oração explicativa.",
+"Acentuação e ortografia":"I e u tônicos em hiato levam acento (saúde, baú). Ideia, jiboia e assembleia perderam o acento; herói continua com ele. Por que: pergunta ou “pelo qual”. Porque: resposta. Por quê: fim de frase. Porquê: substantivo.",
+"Pronomes e colocação":"A próclise (pronome antes do verbo) é obrigatória depois de palavras negativas (nunca, ninguém), de pronomes interrogativos e relativos. Na norma-padrão, não se inicia a frase com pronome oblíquo.",
+"Interpretação e coesão":"Conjunções ligam ideias: mas e porém indicam oposição; portanto e logo, conclusão; porque, causa; embora, concessão. Pronomes retomam termos já citados: descubra a quem o pronome se refere."
+},
+direito:{
+"Organização administrativa":"Pense em quem recebe o serviço. Desconcentração divide dentro da mesma pessoa jurídica. Outorga: a lei transfere a titularidade à Administração Indireta. Delegação: contrato ou ato transfere só a execução a particulares. Autarquia tem direito público; empresa pública e sociedade de economia mista, direito privado.",
+"Atos administrativos":"Atributos: presunção de legitimidade (vale até prova em contrário) e imperatividade (impõe obrigações sem concordância). Anulação é por ilegalidade e pode ser feita pela Administração ou pelo Judiciário. Revogação é por conveniência e oportunidade, só pela Administração.",
+"Poderes da Administração":"Hierárquico: ordena, fiscaliza, revê, delega e avoca. Disciplinar: pune infrações funcionais. Regulamentar: edita normas para executar a lei. De polícia: limita direitos individuais em favor do interesse público.",
+"Princípios":"O art. 37 da Constituição traz cinco princípios: legalidade, impessoalidade, moralidade, publicidade e eficiência. Para a Administração, só é permitido o que a lei autoriza."
+},
+camara:{
+"Lei Orgânica de Cuiabá":"Emenda à LOM: proposta de 1/3 dos vereadores, do Prefeito ou de iniciativa popular, em dois turnos com 10 dias de intervalo e aprovação por 2/3. Iniciativa exclusiva do Prefeito: cargos, servidores, Secretarias e orçamento. Sanção: 15 dias úteis (silêncio é sanção tácita). Veto: motivos comunicados em 48 horas e apreciação em 15 dias.",
+"Regimento Interno":"A Mesa Diretora tem Presidente, 1º e 2º Vice-Presidentes e 1º e 2º Secretários, e dirige os trabalhos legislativos e administrativos. As regras de eleição da Mesa estão em discussão em 2026: confira o texto vigente.",
+"Estatuto dos Servidores (LC 93/2003)":"Readaptação: cargo compatível com limitação física ou mental. Reversão: aposentado volta à atividade. Reintegração: demissão invalidada. Recondução: volta ao cargo anterior por inabilidade no estágio, avaliação de desempenho ou reintegração do anterior ocupante. Aproveitamento: retorno de quem estava em disponibilidade.",
+"Plano de Cargos da Câmara (LC 235/2011 e 609/2026)":"A LC 609/2026 (3 de julho de 2026) alterou a LC 235/2011 e reestruturou os cargos efetivos da Câmara: criou as especialidades de Técnico Legislativo em Sonorização e Cerimonial e cargos de Controlador Interno, de nível superior. Técnico Legislativo exige ensino médio."
+},
+mt:{
+"Mato Grosso e o Centro-Oeste":"O Centro-Oeste reúne GO, MT, MS e DF. Mato Grosso tem capital em Cuiabá, cerca de 903 mil km², 3,66 milhões de habitantes (Censo 2022) e 141 municípios.",
+"Geopolítica":"Limites: AM e PA ao norte, TO e GO a leste, MS ao sul, RO e Bolívia a oeste. O norte integra a Amazônia Legal. A divisão de 1977 criou Mato Grosso do Sul.",
+"Ocupação do território":"Ouro em 1719 e bandeirantes; Capitania em 1748, com Vila Bela como primeira capital; Marcha para o Oeste nas décadas de 1930 e 1940; colonização do norte e do Cerrado nos anos 1970, com migrantes do Sul.",
+"Aspectos físicos e domínios naturais":"Três biomas: Amazônia (norte), Cerrado (centro e leste) e Pantanal (sudoeste, planície inundável). Três conjuntos de bacias: Amazônica, Tocantins-Araguaia e Paraguai. Relevo de planaltos e chapadas; as nascentes dos planaltos alimentam o Pantanal.",
+"Aspectos político-administrativos":"São 141 municípios. O IBGE divide o estado em cinco regiões intermediárias: Cuiabá, Cáceres, Rondonópolis, Barra do Garças e Sinop.",
+"Aspectos socioeconômicos":"População de cerca de 3,66 milhões, com baixa densidade demográfica, e economia ligada à agropecuária.",
+"Formação étnica":"A população reúne povos indígenas, negros, europeus, nordestinos e sulistas. Os sulistas chegaram em grande número nos anos 1970.",
+"Fronteira agrícola e programas":"Polocentro e Prodecer (anos 1970, II PND) levaram crédito e tecnologia ao Cerrado. A ocupação começou com arroz e pastagem e depois veio a soja, o milho e o algodão.",
+"Economia no contexto nacional":"Mato Grosso lidera a produção nacional de soja, milho, algodão e gado bovino.",
+"Urbanização":"Cidades mais populosas (Censo 2022): Cuiabá, Várzea Grande, Rondonópolis, Sinop e Cáceres."
+}
+};
 
 const $=id=>document.getElementById(id);
 const sh=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
@@ -138,7 +223,12 @@ $("d").innerHTML=Object.keys(BANCO).map(k=>'<option value="'+k+'">'+BANCO[k].nom
 function fill(){
   const ts=[...new Set(BANCO[$("d").value].itens.map(x=>x[0]))];
   $("t").innerHTML='<option value="">Todos os temas</option>'+ts.map(t=>"<option>"+t+"</option>").join("");
-  stats();
+  stats();resumo();
+}
+function resumo(){
+  const d=$("d").value,t=$("t").value,R=RESUMOS[d]||{};
+  const ts=[...new Set(BANCO[d].itens.map(x=>x[0]))];
+  $("rsm").innerHTML=t?"<h2>"+t+"</h2><p>"+(R[t]||"")+"</p>":"<h2>O que você precisa entender</h2>"+ts.map(x=>"<details><summary>"+x+"</summary><p>"+(R[x]||"")+"</p></details>").join("");
 }
 function stats(){
   const rows=Object.entries(S[$("d").value]||{}).sort((x,y)=>x[1][0]/x[1][1]-y[1][0]/y[1][1]);
@@ -164,6 +254,7 @@ function paint(){
   }
   const x=Q.fila[Q.pos],certa=x[2][0];
   bd.innerHTML='<p class="meta">Questão '+(Q.pos+1)+" de "+Q.fila.length+" · "+x[0]+'</p><p class="q">'+x[1]+'</p><div class="opts">'+Q.opts.map((o,i)=>'<button data-i="'+i+'" class="'+(Q.done&&o===certa?"ok":Q.done&&i===Q.pick?"bad":"")+'"'+(Q.done?" disabled":"")+">"+o+"</button>").join("")+"</div>"
+    +"<details><summary>Resumo do tema</summary><p>"+((RESUMOS[Q.d]||{})[x[0]]||"")+"</p></details>"
     +(Q.done?'<p class="fb">'+(Q.opts[Q.pick]===certa?"✓ Correto! ":"✗ Não foi dessa vez. ")+x[3]+'</p><button class="nx" id="nx">'+(Q.pos<Q.fila.length-1?"Próxima":"Ver resultado")+"</button>":"");
 }
 $("bd").onclick=e=>{
@@ -179,6 +270,7 @@ $("bd").onclick=e=>{
 $("st").onclick=e=>{if(e.target.id==="rs"){delete S[$("d").value];save();stats()}};
 $("go").onclick=()=>start({d:$("d").value,t:$("t").value,n:$("n").value});
 $("d").onchange=fill;
+$("t").onchange=resumo;
 fill();
 </script>
 </body>
