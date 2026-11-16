@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lousa de Português · Gramática</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f3efe6;--fg:#23201a;--muted:#6b6455;--btn:#23201a;--btn-fg:#f3efe6;--line:#cfc7b4;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#14181a;--fg:#ece8dc;--muted:#9a9484;--btn:#ece8dc;--btn-fg:#14181a;--line:#2e3532}}
+:root[data-theme="dark"]{--bg:#14181a;--fg:#ece8dc;--muted:#9a9484;--btn:#ece8dc;--btn-fg:#14181a;--line:#2e3532}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.45}
+main{max-width:1000px;margin:0 auto;padding:18px 14px 28px}
+h1{font-family:"Patrick Hand","Comic Sans MS",cursive;font-size:1.5rem;font-weight:400;margin:0 0 2px}
+.sub{color:var(--muted);font-size:.9rem;margin:0 0 14px}
+.ctl{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px}
+button,select{font:inherit;font-size:.95rem;padding:8px 13px;border-radius:8px;border:1px solid var(--btn);background:transparent;color:var(--fg);cursor:pointer}
+.tog{display:inline-flex}.tog button{border-radius:0}.tog button:first-child{border-radius:8px 0 0 8px}.tog button:last-child{border-radius:0 8px 8px 0;border-left:0}
+.tog button[aria-pressed="true"]{background:var(--btn);color:var(--btn-fg)}
+button:focus-visible,select:focus-visible{outline:3px solid #3b82f6;outline-offset:2px}
+.board{position:relative;background:radial-gradient(ellipse at 30% 20%,#2a4d3d,#1b3429 70%);border:10px solid #8a6a45;border-radius:10px;padding:20px 18px 22px;color:#f4f1e6;font-family:"Patrick Hand","Comic Sans MS",cursive;overflow:hidden;box-shadow:inset 0 0 40px rgba(0,0,0,.35);min-height:380px}
+.title{text-align:center;font-size:1.3rem;color:#ffe27a;opacity:.9}
+.sent{display:flex;flex-wrap:wrap;justify-content:center;gap:10px 14px;margin:74px 0 22px}
+.sg{display:flex;flex-direction:column;align-items:center;gap:6px;border:0;background:none;color:#f4f1e6;font-family:inherit;padding:4px 6px;border-radius:8px;cursor:pointer}
+.sg:hover{outline:2px dashed rgba(244,241,230,.4)}
+.sg .w{font-size:clamp(1.6rem,4.4vw,2.6rem);line-height:1.1;transition:color .3s}
+.sg .bar{display:block;width:100%;height:5px;border-radius:3px;background:var(--c);opacity:.28;transition:opacity .3s}
+.sg .chip{font-size:.98rem;line-height:1.1;background:var(--c);color:#1b3429;padding:3px 9px;border-radius:12px;max-width:150px;text-align:center;opacity:0;transform:translateY(-4px);transition:opacity .35s,transform .35s}
+.sg.on .w{color:var(--c)}.sg.on .bar{opacity:1}.sg.on .chip{opacity:1;transform:none}
+.sg.cur{background:rgba(255,226,122,.13)}
+.sg:disabled{cursor:default;color:#f4f1e6}.sg:disabled:hover{outline:0}
+.panel{border-top:2px dashed rgba(244,241,230,.3);padding-top:14px;font-size:clamp(1.1rem,2.2vw,1.35rem);line-height:1.3;min-height:130px}
+.panel p{margin:0 0 10px}.fn b{font-weight:400}
+.opts{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:6px 0 10px}
+.opts button,.nx{font-family:inherit;font-size:1.1rem;border:2px solid rgba(244,241,230,.5);color:#f4f1e6;border-radius:10px;padding:8px 10px}
+.opts button.ok{border-color:#7be39a;background:rgba(123,227,154,.2)}
+.opts button.bad{border-color:#ff7b7b;background:rgba(255,123,123,.2);animation:sh .35s}
+.nx{background:#ffe27a;color:#1b3429;border-color:#ffe27a}
+@keyframes sh{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+#ptr{position:absolute;left:0;top:0;width:0;height:0;opacity:0;pointer-events:none;z-index:5;transition:transform .7s cubic-bezier(.4,.1,.2,1),opacity .3s}
+#ptr::before{content:"";position:absolute;left:-7px;top:-7px;width:14px;height:14px;border-radius:50%;background:#ffe27a;box-shadow:0 0 12px 4px rgba(255,226,122,.7)}
+.stick{position:absolute;left:-3px;top:0;width:6px;height:70px;border-radius:3px;background:linear-gradient(#e8c98f,#8a6a45);transform-origin:50% 0;transform:rotate(210deg);box-shadow:2px 2px 4px rgba(0,0,0,.4)}
+#ptr.flip .stick{transform:rotate(150deg)}
+.note{color:var(--muted);font-size:.85rem;margin-top:14px;max-width:72ch}
+@media (max-width:560px){.opts{grid-template-columns:1fr}.sent{margin-top:64px}}
+@media (prefers-reduced-motion:reduce){#ptr,.sg .chip,.sg .w,.sg .bar{transition:none}.opts button.bad{animation:none}}
+.kiko{float:right;width:64px;height:64px;border-radius:50%;object-fit:cover;border:3px solid #8a6a45;margin:0 0 6px 12px;box-shadow:0 2px 6px rgba(0,0,0,.3)}
+.back{margin:0 0 6px;font-size:.9rem}.back a{color:var(--muted)}
+select,option{background:var(--bg);color:var(--fg)}
+</style>
+</head>
+<body>
+<main>
+<img class="kiko" src="data:image/jpeg;base64,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" width="64" height="64" alt="Kiko, o cachorro">
+<p class="back"><a href="index.html">← Início</a></p>
+<h1>Lousa de Português · Gramática</h1>
+<p class="sub">Regras em frases-modelo: toque nas partes da frase e veja a regra de cada uma.</p>
+<div class="ctl">
+  <div class="tog" role="group" aria-label="Modo"><button id="mE" aria-pressed="true">Explorar</button><button id="mT" aria-pressed="false">Testar-me</button></div>
+  <label>Aula <select id="les"></select></label>
+  <button id="all">Mostrar tudo</button>
+  <button id="clr">Limpar</button>
+</div>
+<div class="board" id="board">
+  <div class="title">Português · Gramática</div>
+  <div class="sent" id="sent"></div>
+  <div class="panel" id="panel" aria-live="polite"></div>
+  <div id="ptr"><div class="stick"></div></div>
+</div>
+<p class="note">Sem voz: o ensino acontece pelos sinais na lousa (cores, vareta, rótulos e perguntas). Cada frase é um dado simples, então a IA pode gerar novas aulas no mesmo formato. Revise o conteúdo antes de publicar.</p>
+</main>
+
+<script>
+/* [trecho, função, cor, explicação, dica] */
+const COL={c1:"#8ecbff",c2:"#ffe27a",c3:"#ff9fb2",c4:"#b6f0b1",c5:"#ffb877",c6:"#e0b3ff"};
+const LESSONS=[
+{"t": "Crase", "p": ["crase facultativa"], "s": [["Entreguei o convite", "o verbo pede “a”", "c1", "Entregar algo a alguém exige a preposição “a”.", "Que palavra exige a preposição?"], ["à diretora", "crase", "c2", "É a preposição “a” mais o artigo “a”. Teste: troque por um masculino e veja se fica “ao”.", "Onde os dois “a” se juntam?"], ["e disse a todos", "sem crase antes de “todos”", "c3", "Pronome indefinido plural não aceita artigo feminino.", "Há artigo antes de “todos”?"], ["que cheguei a pé", "sem crase antes de masculino", "c5", "“A pé” é masculino: não há artigo “a”.", "Qual palavra masculina aparece aqui?"]]},
+{"t": "Concordância com o “se”", "p": ["sujeito indeterminado"], "s": [["Faz dois anos", "verbo impessoal: singular", "c1", "“Fazer” indicando tempo não tem sujeito e fica no singular.", "Esse verbo tem sujeito?"], ["que se alugam casas", "“se” apassivador: verbo concorda", "c2", "“Alugar” é transitivo direto: “casas” é o sujeito, e o verbo vai ao plural.", "Quem é o sujeito de “alugam”?"], ["e precisa-se", "“se” indeterminador: singular", "c3", "“Precisar” pede preposição: o verbo fica no singular.", "O verbo pede preposição?"], ["de funcionários", "objeto indireto", "c5", "É o termo com preposição: não é sujeito e não muda o verbo.", "Esse termo concorda com o verbo?"]]},
+{"t": "Regência verbal", "p": ["namorar pede “com”"], "s": [["Todos assistiram ao discurso", "assistir (ver) pede “a”", "c1", "Assistir no sentido de ver é transitivo indireto.", "Qual preposição o verbo pede?"], ["e ele aspira ao cargo", "aspirar (desejar) pede “a”", "c2", "Aspirar no sentido de desejar exige “a”.", "Aspirar, aqui, é respirar ou desejar?"], ["mas prefere o cinema ao teatro", "preferir pede “a”", "c3", "Prefere-se uma coisa a outra, sem “do que” nem “mais”.", "Com que palavra se compara?"]]},
+{"t": "Pontuação", "p": ["vocativo"], "s": [["Maria", "sujeito", "c1", "O sujeito não é separado do verbo por vírgula. A vírgula depois dele só abre o aposto.", "Quem pratica a ação?"], ["a nova diretora", "aposto explicativo", "c2", "Explica o sujeito e fica entre vírgulas.", "O que explica a palavra Maria?"], ["anunciou obras ontem", "verbo e complementos, sem vírgula", "c3", "Não se separa o verbo de seus complementos.", "Há vírgula entre o verbo e o complemento?"], ["mas poucas foram iniciadas", "oração adversativa depois de vírgula", "c5", "A vírgula antes de “mas” separa ideias contrárias.", "Que ideia contrária vem depois da vírgula?"]]},
+{"t": "Por que, porque, por quê e porquê", "p": ["uso antes de artigo plural"], "s": [["Por que você faltou?", "por que: início de pergunta", "c1", "Equivale a “por qual motivo”.", "Qual forma abre a pergunta?"], ["Faltei porque chovia.", "porque: resposta", "c2", "Liga duas orações e indica a causa.", "Qual forma indica a causa?"], ["Faltou por quê?", "por quê: fim de frase", "c3", "Antes de ponto final, de interrogação ou de exclamação, o “quê” é acentuado.", "Qual forma vem antes do ponto final?"], ["Explique o porquê.", "porquê: substantivo", "c5", "Vem com artigo e significa “o motivo”.", "Qual forma vem com artigo?"]]},
+{"t": "Acentuação", "p": ["oxítona terminada em “a”"], "s": [["A saúde", "hiato com “u” tônico leva acento", "c1", "Sa-ú-de: o “u” tônico fica sozinho na sílaba.", "Por que “saúde” é acentuada?"], ["do herói", "ditongo aberto “ói” leva acento", "c2", "Em oxítonas, os ditongos abertos éis, éu e ói são acentuados.", "Qual ditongo aberto aparece?"], ["da ideia e da assembleia", "paroxítonas com “ei”: sem acento", "c3", "A reforma ortográfica retirou o acento dessas palavras.", "O que a reforma fez com essas palavras?"]]},
+{"t": "Colocação pronominal", "p": ["mesóclise no futuro"], "s": [["Ninguém me avisou", "próclise após palavra negativa", "c1", "Palavras negativas atraem o pronome para antes do verbo.", "O que atrai o pronome?"], ["mas avise-me quando chegar", "ênclise no imperativo afirmativo", "c2", "Sem palavra atrativa, o pronome vem depois do verbo.", "O pronome vem antes ou depois do verbo?"], ["e quem me disse isso?", "próclise após palavra interrogativa", "c3", "Pronomes interrogativos, como “quem”, atraem o pronome.", "Que palavra vem antes do pronome?"]]},
+{"t": "Coesão e conjunções", "p": ["concessão"], "s": [["O prefeito anunciou obras", "ideia inicial", "c1", "É o ponto de partida do raciocínio.", "Qual é a ideia de partida?"], ["mas poucas foram iniciadas", "oposição", "c2", "“Mas” é adversativa: contrapõe a ideia anterior.", "O que “mas” indica?"], ["portanto, os servidores cobraram resultados", "conclusão", "c3", "“Portanto” introduz a consequência do que foi dito.", "O que “portanto” indica?"], ["porque esperavam melhorias", "causa", "c5", "“Porque” indica o motivo da cobrança.", "O que “porque” indica?"]]}
+];
+const $=id=>document.getElementById(id);
+const board=$("board"),sent=$("sent"),panel=$("panel"),ptr=$("ptr");
+let mode="e",L=0,sel=-1,rev=new Set(),qi=0,score=0,tries=0,answered=false,done=false,opts=[],wrong=new Set(),fb="";
+const lesson=()=>LESSONS[L];
+$("les").innerHTML=LESSONS.map((l,k)=>'<option value="'+k+'">'+l.t+'</option>').join("");
+
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function buildOpts(c){
+  const l=lesson(),pool=[...new Set(l.s.map(x=>x[1]).concat(l.p||[]))];
+  const d=shuffle(pool.filter(p=>p!==c)).slice(0,3);
+  return shuffle([c].concat(d));
+}
+function movePtr(){
+  if(sel<0||!sent.children[sel]){ptr.style.opacity=0;return}
+  const b=board.getBoundingClientRect(),r=sent.children[sel].querySelector(".w").getBoundingClientRect();
+  const x=r.left-b.left+r.width/2,y=r.top-b.top-4;
+  ptr.classList.toggle("flip",x>b.width*.6);
+  ptr.style.opacity=1;
+  ptr.style.transform="translate("+x+"px,"+y+"px)";
+}
+function render(){
+  const s=lesson().s;
+  sent.innerHTML=s.map((p,k)=>'<button class="sg'+(rev.has(k)?" on":"")+(k===sel?" cur":"")+'" data-k="'+k+'" style="--c:'+COL[p[2]]+'"'+(mode==="t"?" disabled":"")+'><span class="w">'+p[0]+'</span><span class="bar"></span><span class="chip">'+p[1]+'</span></button>').join("");
+  let h="";
+  if(mode==="e"){
+    if(sel<0)h="<p>Toque em uma parte da frase para ver o que ela representa.</p>";
+    else{const p=s[sel];h='<p class="fn" style="color:'+COL[p[2]]+'"><b>“'+p[0]+'”</b> → '+p[1]+"</p><p>"+p[3]+"</p>"}
+  }else if(done){
+    h="<p>Fim! Você acertou de primeira "+score+" de "+s.length+".</p>";
+  }else{
+    const p=s[qi];
+    h="<p>O que representa <b>“"+p[0]+"”</b>?</p><div class=\"opts\">"+opts.map(o=>'<button data-o="'+o+'" class="'+(answered&&o===p[1]?"ok":wrong.has(o)?"bad":"")+'">'+o+"</button>").join("")+"</div>";
+    if(fb)h+="<p>"+fb+"</p>";
+    if(answered)h+='<button class="nx" id="nx">'+(qi<s.length-1?"Próxima":"Ver resultado")+"</button>";
+  }
+  panel.innerHTML=h;
+  $("all").hidden=mode==="t";
+  $("clr").textContent=mode==="t"?"Refazer":"Limpar";
+  movePtr();
+}
+function startQ(){sel=qi;opts=buildOpts(lesson().s[qi][1]);answered=false;tries=0;wrong=new Set();fb="";render()}
+function reset(){
+  rev=new Set();sel=-1;qi=0;score=0;done=false;answered=false;fb="";wrong=new Set();
+  if(mode==="t")startQ();else render();
+}
+sent.onclick=e=>{
+  const b=e.target.closest(".sg");if(!b||mode!=="e")return;
+  sel=+b.dataset.k;rev.add(sel);render();
+};
+panel.onclick=e=>{
+  if(e.target.id==="nx"){
+    if(qi<lesson().s.length-1){qi++;startQ()}else{done=true;sel=-1;render()}
+    return;
+  }
+  const o=e.target.closest("[data-o]");if(!o||answered||mode!=="t")return;
+  const p=lesson().s[qi],v=o.dataset.o;
+  if(v===p[1]){answered=true;rev.add(qi);if(tries===0)score++;fb="✓ Correto! "+p[3]}
+  else{tries++;wrong.add(v);fb="✗ Ainda não. Dica: "+p[4]}
+  render();
+};
+function setMode(m){
+  mode=m;$("mE").setAttribute("aria-pressed",m==="e");$("mT").setAttribute("aria-pressed",m==="t");reset();
+}
+$("mE").onclick=()=>setMode("e");
+$("mT").onclick=()=>setMode("t");
+$("les").onchange=e=>{L=+e.target.value;reset()};
+$("all").onclick=()=>{lesson().s.forEach((_,k)=>rev.add(k));render()};
+$("clr").onclick=reset;
+addEventListener("resize",movePtr);
+render();
+</script>
+</body>
+</html>
