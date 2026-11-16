@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lousa de Serviço Social</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f3efe6;--fg:#23201a;--muted:#6b6455;--btn:#23201a;--btn-fg:#f3efe6;--line:#cfc7b4;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#14181a;--fg:#ece8dc;--muted:#9a9484;--btn:#ece8dc;--btn-fg:#14181a;--line:#2e3532}}
+:root[data-theme="dark"]{--bg:#14181a;--fg:#ece8dc;--muted:#9a9484;--btn:#ece8dc;--btn-fg:#14181a;--line:#2e3532}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.45}
+main{max-width:1000px;margin:0 auto;padding:18px 14px 28px}
+h1{font-family:"Patrick Hand","Comic Sans MS",cursive;font-size:1.5rem;font-weight:400;margin:0 0 2px}
+.sub{color:var(--muted);font-size:.9rem;margin:0 0 14px}
+.ctl{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px}
+button,select{font:inherit;font-size:.95rem;padding:8px 13px;border-radius:8px;border:1px solid var(--btn);background:transparent;color:var(--fg);cursor:pointer}
+.tog{display:inline-flex}.tog button{border-radius:0}.tog button:first-child{border-radius:8px 0 0 8px}.tog button:last-child{border-radius:0 8px 8px 0;border-left:0}
+.tog button[aria-pressed="true"]{background:var(--btn);color:var(--btn-fg)}
+button:focus-visible,select:focus-visible{outline:3px solid #3b82f6;outline-offset:2px}
+.board{position:relative;background:radial-gradient(ellipse at 30% 20%,#2a4d3d,#1b3429 70%);border:10px solid #8a6a45;border-radius:10px;padding:20px 18px 22px;color:#f4f1e6;font-family:"Patrick Hand","Comic Sans MS",cursive;overflow:hidden;box-shadow:inset 0 0 40px rgba(0,0,0,.35);min-height:380px}
+.title{text-align:center;font-size:1.3rem;color:#ffe27a;opacity:.9}
+.sent{display:flex;flex-wrap:wrap;justify-content:center;gap:10px 14px;margin:74px 0 22px}
+.sg{display:flex;flex-direction:column;align-items:center;gap:6px;border:0;background:none;color:#f4f1e6;font-family:inherit;padding:4px 6px;border-radius:8px;cursor:pointer}
+.sg:hover{outline:2px dashed rgba(244,241,230,.4)}
+.sg .w{font-size:clamp(1.6rem,4.4vw,2.6rem);line-height:1.1;transition:color .3s}
+.sg .bar{display:block;width:100%;height:5px;border-radius:3px;background:var(--c);opacity:.28;transition:opacity .3s}
+.sg .chip{font-size:.98rem;line-height:1.1;background:var(--c);color:#1b3429;padding:3px 9px;border-radius:12px;max-width:150px;text-align:center;opacity:0;transform:translateY(-4px);transition:opacity .35s,transform .35s}
+.sg.on .w{color:var(--c)}.sg.on .bar{opacity:1}.sg.on .chip{opacity:1;transform:none}
+.sg.cur{background:rgba(255,226,122,.13)}
+.sg:disabled{cursor:default;color:#f4f1e6}.sg:disabled:hover{outline:0}
+.panel{border-top:2px dashed rgba(244,241,230,.3);padding-top:14px;font-size:clamp(1.1rem,2.2vw,1.35rem);line-height:1.3;min-height:130px}
+.panel p{margin:0 0 10px}.fn b{font-weight:400}
+.opts{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:6px 0 10px}
+.opts button,.nx{font-family:inherit;font-size:1.1rem;border:2px solid rgba(244,241,230,.5);color:#f4f1e6;border-radius:10px;padding:8px 10px}
+.opts button.ok{border-color:#7be39a;background:rgba(123,227,154,.2)}
+.opts button.bad{border-color:#ff7b7b;background:rgba(255,123,123,.2);animation:sh .35s}
+.nx{background:#ffe27a;color:#1b3429;border-color:#ffe27a}
+@keyframes sh{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+#ptr{position:absolute;left:0;top:0;width:0;height:0;opacity:0;pointer-events:none;z-index:5;transition:transform .7s cubic-bezier(.4,.1,.2,1),opacity .3s}
+#ptr::before{content:"";position:absolute;left:-7px;top:-7px;width:14px;height:14px;border-radius:50%;background:#ffe27a;box-shadow:0 0 12px 4px rgba(255,226,122,.7)}
+.stick{position:absolute;left:-3px;top:0;width:6px;height:70px;border-radius:3px;background:linear-gradient(#e8c98f,#8a6a45);transform-origin:50% 0;transform:rotate(210deg);box-shadow:2px 2px 4px rgba(0,0,0,.4)}
+#ptr.flip .stick{transform:rotate(150deg)}
+.note{color:var(--muted);font-size:.85rem;margin-top:14px;max-width:72ch}
+@media (max-width:560px){.opts{grid-template-columns:1fr}.sent{margin-top:64px}}
+@media (prefers-reduced-motion:reduce){#ptr,.sg .chip,.sg .w,.sg .bar{transition:none}.opts button.bad{animation:none}}
+.kiko{float:right;width:64px;height:64px;border-radius:50%;object-fit:cover;border:3px solid #8a6a45;margin:0 0 6px 12px;box-shadow:0 2px 6px rgba(0,0,0,.3)}
+.back{margin:0 0 6px;font-size:.9rem}.back a{color:var(--muted)}
+select,option{background:var(--bg);color:var(--fg)}
+</style>
+</head>
+<body>
+<main>
+<img class="kiko" src="data:image/jpeg;base64,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" width="64" height="64" alt="Kiko, o cachorro">
+<p class="back"><a href="index.html">← Início</a></p>
+<h1>Lousa de Serviço Social</h1>
+<p class="sub">Aula interativa: toque nas partes da frase, veja o que cada uma representa e acompanhe a vareta.</p>
+<div class="ctl">
+  <div class="tog" role="group" aria-label="Modo"><button id="mE" aria-pressed="true">Explorar</button><button id="mT" aria-pressed="false">Testar-me</button></div>
+  <label>Aula <select id="les"></select></label>
+  <button id="all">Mostrar tudo</button>
+  <button id="clr">Limpar</button>
+</div>
+<div class="board" id="board">
+  <div class="title">Serviço Social</div>
+  <div class="sent" id="sent"></div>
+  <div class="panel" id="panel" aria-live="polite"></div>
+  <div id="ptr"><div class="stick"></div></div>
+</div>
+<p class="note">Sem voz: o ensino acontece pelos sinais na lousa (cores, vareta, rótulos e perguntas). Cada frase é um dado simples, então a IA pode gerar novas aulas no mesmo formato. Revise o conteúdo antes de publicar.</p>
+</main>
+
+<script>
+/* [trecho, função, cor, explicação, dica] */
+const COL={c1:"#8ecbff",c2:"#ffe27a",c3:"#ff9fb2",c4:"#b6f0b1",c5:"#ffb877",c6:"#e0b3ff"};
+const LESSONS=[{"t": "1. Questão social", "p": [], "s": [["Questão social", "conceito", "c1", "Conjunto das desigualdades produzidas pela relação entre capital e trabalho.", "Qual é o conceito central?"], ["objeto de intervenção", "papel na profissão", "c2", "É o objeto de intervenção do Serviço Social.", "O que ela é para o Serviço Social?"], ["desemprego, informalidade, fome, violência", "expressões atuais", "c3", "Também moradia precária, exploração do trabalho e desigualdades de gênero e raça.", "O que esses exemplos representam?"], ["não é problema individual", "pegadinha", "c4", "Ela é estrutural. Culpar o indivíduo é o erro que a banca coloca.", "Ela é individual ou estrutural?"]]}, {"t": "2. Lei 8.662/1993", "p": [], "s": [["Art. 4º", "competências", "c1", "Elaborar e executar políticas sociais, orientar indivíduos e grupos, realizar estudos e perícias. Podem ser compartilhadas com outras profissões.", "O que o art. 4º traz?"], ["Art. 5º", "atribuições privativas", "c2", "Coordenar, supervisionar e dirigir o Serviço Social; realizar perícias e laudos da área; supervisão direta de estágio. Só o assistente social faz.", "O que o art. 5º traz?"], ["competência × privativa", "diferença", "c3", "Competência pode ser compartilhada. Atribuição privativa é exclusiva da profissão.", "Qual das duas é exclusiva?"], ["CFESS/CRESS", "fiscalização", "c4", "Os conselhos fiscalizam o exercício profissional.", "Quem fiscaliza a profissão?"]]}, {"t": "3. Código de Ética (Res. CFESS 273/1993)", "p": [], "s": [["Resolução CFESS 273/1993", "norma", "c1", "É o Código de Ética Profissional do Assistente Social.", "Qual norma a frase cita?"], ["11 princípios", "quantidade", "c2", "O Código tem 11 princípios fundamentais.", "Quantos princípios fundamentais existem?"], ["liberdade", "valor central", "c3", "A liberdade é o valor ético central do Código.", "Qual é o valor central?"], ["direitos humanos e cidadania", "princípios mais cobrados", "c4", "Defesa dos direitos humanos e recusa do arbítrio e do autoritarismo; ampliação da cidadania e da democracia; equidade e justiça social; respeito à diversidade; compromisso com a qualidade dos serviços; exercício sem discriminação; posicionamento a favor de uma nova ordem societária.", "Que grupo de princípios é esse?"], ["sigilo profissional", "regra do sigilo", "c5", "Protege o usuário e é direito dele. Só pode ser quebrado em situações excepcionais: risco à vida ou a terceiros, ou casos previstos em lei.", "Quando o sigilo pode ser quebrado?"], ["vedado", "limites", "c6", "É vedado exercer a profissão sem observar as normas do Código e usá-la para discriminação ou interesse pessoal.", "O que o profissional não pode fazer?"]]}, {"t": "4. Seguridade Social (CF/88, arts. 194 a 204)", "p": [], "s": [["Seguridade Social", "tripé", "c1", "Saúde + Previdência + Assistência.", "Quais são as três políticas?"], ["Saúde (art. 196)", "saúde", "c2", "Direito de todos e dever do Estado. Universal, gratuita e sem contribuição.", "Qual política é universal e gratuita?"], ["Previdência", "previdência", "c3", "Contributiva, de caráter obrigatório.", "Qual política exige contribuição?"], ["Assistência (art. 203)", "assistência", "c4", "Para quem dela necessitar, independe de contribuição.", "Qual política é para quem necessitar?"], ["objetivos da seguridade", "objetivos", "c5", "Universalidade; uniformidade e equivalência entre urbano e rural; seletividade e distributividade; irredutibilidade do valor dos benefícios; diversidade da base de financiamento; gestão democrática e descentralizada.", "Que lista é essa?"], ["financiamento", "financiamento", "c6", "Feito por toda a sociedade: orçamento da União, estados, DF e municípios, e contribuições sociais.", "Quem financia a seguridade?"]]}, {"t": "5. SUAS, LOAS e PNAS", "p": [], "s": [["LOAS (Lei 8.742/1993)", "natureza da assistência", "c1", "Política pública de seguridade social não contributiva, direito do cidadão e dever do Estado.", "Qual a natureza da assistência na LOAS?"], ["descentralização, participação popular", "diretrizes", "c2", "Descentralização político-administrativa, participação popular e primazia da responsabilidade do Estado.", "Que lista é essa?"], ["BPC", "benefício", "c3", "1 salário-mínimo para pessoa idosa (65 anos ou mais) ou pessoa com deficiência de longo prazo, com renda familiar per capita inferior a 1/4 do salário-mínimo.", "Qual benefício tem esse critério de renda?"], ["SUAS", "sistema", "c4", "Organiza a assistência de forma descentralizada e participativa, com base em territórios, matricialidade sociofamiliar (família como centro) e vigilância socioassistencial.", "Qual sistema organiza a assistência?"], ["Proteção Social Básica", "PSB: prevenção", "c5", "Prevenção de riscos (PNAS, 2004). Equipamento: CRAS. Serviço principal: PAIF.", "Qual proteção previne riscos?"], ["PSE de média complexidade", "PSE média: violação com vínculo", "c6", "Vínculos mantidos, mas direitos violados. Equipamento: CREAS. Serviço: PAEFI.", "Qual proteção atende violação com vínculo mantido?"], ["PSE de alta complexidade", "PSE alta: acolhimento", "c1", "Afastamento do convívio: acolhimento institucional, família acolhedora e república.", "Qual proteção envolve afastamento do convívio?"], ["macete", "resumo", "c2", "PSB = prevenção, CRAS. PSE média = violação com vínculo, CREAS. PSE alta = acolhimento.", "Qual é o macete das proteções?"]]}, {"t": "6. Planejamento, gestão e avaliação", "p": [], "s": [["diagnóstico → planejamento → execução → monitoramento → avaliação", "ciclo", "c1", "Essa é a ordem do ciclo das políticas sociais.", "O que essa sequência representa?"], ["monitoramento", "acompanha durante", "c2", "Acompanha a execução durante o processo.", "Qual etapa acompanha durante a execução?"], ["avaliação", "mede resultados e impactos", "c3", "Mede resultados e impactos.", "Qual etapa mede resultados?"], ["estratégico, tático, operacional", "níveis de planejamento", "c4", "Estratégico é o de longo prazo, depois vêm o tático e o operacional.", "Que níveis são esses?"], ["eficiência", "uso dos recursos", "c5", "Usar bem os recursos.", "Qual conceito é usar bem os recursos?"], ["eficácia", "metas atingidas", "c6", "Atingir as metas.", "Qual conceito é atingir metas?"], ["efetividade", "mudança real", "c1", "Gerar mudança real na vida das pessoas.", "Qual conceito é gerar mudança real?"], ["estrutura do projeto", "partes do projeto", "c2", "Justificativa, objetivos (geral e específicos), metodologia, cronograma, orçamento e avaliação.", "O que compõe um projeto?"]]}, {"t": "7. Instrumentais técnico-operativos", "p": [], "s": [["Estudo social", "investiga a situação", "c1", "Investigação para conhecer a situação do usuário e fundamentar a intervenção.", "Qual instrumento investiga a situação?"], ["Entrevista", "conversa intencional", "c2", "Conversa intencional e planejada, para coletar informações e construir vínculo.", "Qual instrumento é conversa planejada?"], ["Visita domiciliar ou institucional", "contexto real de vida", "c3", "Conhecer o contexto real de vida do usuário.", "Qual instrumento conhece o contexto real?"], ["Relatório social", "descreve", "c4", "Descreve o que foi feito e observado.", "Qual documento descreve?"], ["Parecer social", "opina e conclui", "c5", "Traz a opinião técnica fundamentada, a conclusão do assistente social. É o que mais se confunde com o relatório.", "Qual documento opina e conclui?"], ["Perícia social", "exame técnico", "c6", "Exame técnico para subsidiar decisões, geralmente judiciais.", "Qual instrumento subsidia decisões judiciais?"], ["Laudo social", "resultado da perícia", "c1", "Documento resultante da perícia social.", "Qual documento resulta da perícia?"], ["Diagnóstico socioeconômico", "condições de vida do território", "c2", "Levanta as condições de vida de uma população ou território.", "Qual instrumento levanta condições de vida?"]]}, {"t": "8. Direitos humanos, cidadania e controle social", "p": [], "s": [["Cidadania", "direitos civis, políticos e sociais", "c1", "É a garantia de direitos civis, políticos e sociais.", "O que garante a cidadania?"], ["Diversidade", "respeito às diferenças", "c2", "Respeito a raça, gênero, orientação sexual, religião e outras diferenças.", "Qual conceito respeita as diferenças?"], ["Família", "proteção e conflito", "c3", "Reconhecida como espaço de proteção, mas também de conflitos e violências. Precisa de apoio do Estado.", "Como a família é vista?"], ["Controle social", "sociedade fiscaliza e participa", "c4", "A sociedade fiscaliza e participa das políticas públicas por meio de conselhos e conferências.", "Quem fiscaliza no controle social?"], ["Conselhos", "deliberativos e paritários", "c5", "Têm caráter deliberativo e paritário: metade de representantes do governo e metade da sociedade civil.", "Como é a composição dos conselhos?"]]}, {"t": "9. ECA (Lei 8.069/1990)", "p": [], "s": [["Criança", "até 12 anos incompletos", "c1", "É quem tem até 12 anos incompletos.", "Quem é criança no ECA?"], ["Adolescente", "12 a 18 anos", "c2", "É quem tem de 12 a 18 anos.", "Quem é adolescente no ECA?"], ["Proteção integral", "doutrina do ECA", "c3", "Com prioridade absoluta. Os direitos são assegurados pela família, sociedade e Estado.", "Qual doutrina o ECA adota?"], ["Conselho Tutelar", "permanente, autônomo, não jurisdicional", "c4", "Zela pelos direitos de crianças e adolescentes. Os conselheiros são eleitos pela comunidade.", "Qual órgão é permanente e não jurisdicional?"], ["Medidas protetivas", "ameaça ou violação de direitos", "c5", "Aplicadas quando há ameaça ou violação de direitos.", "Quando se aplicam as medidas protetivas?"], ["Medidas socioeducativas", "adolescente em conflito com a lei", "c6", "Advertência, reparação do dano, prestação de serviços à comunidade, liberdade assistida, semiliberdade e internação.", "Quais medidas são para adolescente em conflito com a lei?"], ["Internação", "brevidade e excepcionalidade", "c1", "Segue brevidade, excepcionalidade e respeito à condição peculiar de pessoa em desenvolvimento. Dura no máximo 3 anos.", "Qual o prazo máximo da internação?"], ["Acolhimento institucional", "provisório e excepcional", "c2", "A prioridade é a reintegração familiar.", "Qual medida é provisória e excepcional?"]]}, {"t": "10. Estatuto da Pessoa Idosa (Lei 10.741/2003)", "p": [], "s": [["60 anos ou mais", "quem é pessoa idosa", "c1", "Esse é o critério de idade do Estatuto.", "A partir de que idade se é pessoa idosa?"], ["prioridade absoluta", "garantia", "c2", "Garante prioridade absoluta e proteção integral.", "Qual prioridade o Estatuto garante?"], ["80 anos ou mais", "prioridade especial", "c3", "Prioridade especial dentro do grupo das pessoas idosas.", "Quem tem prioridade especial?"], ["atendimento preferencial", "serviços públicos", "c4", "Vale em serviços e órgãos públicos.", "Onde vale o atendimento preferencial?"], ["transporte coletivo gratuito", "65 anos", "c5", "Direito a partir de 65 anos.", "A partir de que idade o transporte é gratuito?"], ["alimentos", "obrigação solidária", "c6", "A obrigação de alimentos é solidária entre os familiares.", "Como é a obrigação de alimentos?"], ["abandono e maus-tratos", "crimes", "c1", "Abandono e maus-tratos são crimes.", "Abandono e maus-tratos são o quê?"]]}, {"t": "11. LBI (Lei 13.146/2015)", "p": [], "s": [["impedimento de longo prazo", "pessoa com deficiência", "c1", "Físico, mental, intelectual ou sensorial que, em interação com barreiras, pode obstruir a participação plena e efetiva na sociedade.", "Que conceito é esse?"], ["biopsicossocial", "avaliação da deficiência", "c2", "A avaliação é biopsicossocial, multiprofissional e interdisciplinar.", "Como é a avaliação da deficiência?"], ["capacidade civil", "não é afetada", "c3", "A deficiência não afeta a plena capacidade civil.", "A deficiência afeta a capacidade civil?"], ["curatela", "medida excepcional", "c4", "Excepcional, proporcional e limitada a atos patrimoniais e negociais.", "Qual medida é excepcional?"], ["acessibilidade, desenho universal, tecnologia assistiva", "conceitos importantes", "c5", "São conceitos centrais da lei.", "Que conceitos são esses?"], ["discriminar", "crime", "c6", "É crime discriminar pessoa com deficiência.", "Discriminar pessoa com deficiência é o quê?"]]}, {"t": "12. Controle social e participação cidadã", "p": [], "s": [["Mobilização social", "ação coletiva", "c1", "Ação coletiva organizada para defender direitos e influenciar decisões.", "Qual conceito é ação coletiva organizada?"], ["Participação cidadã", "formas de participação", "c2", "Acontece em conselhos, conferências, audiências públicas e orçamento participativo.", "Onde ocorre a participação cidadã?"], ["Conferências", "definem diretrizes", "c3", "Definem as diretrizes das políticas.", "Quem define diretrizes?"], ["Conselhos", "acompanham e fiscalizam", "c4", "Acompanham e fiscalizam as políticas.", "Quem acompanha e fiscaliza?"]]}, {"t": "13. Assessoria, supervisão e trabalho interdisciplinar", "p": [], "s": [["Assessoria e consultoria", "apoio técnico", "c1", "Oferecem apoio técnico a equipes, órgãos e movimentos sociais.", "Qual atividade dá apoio técnico?"], ["supervisor de campo", "assistente social da instituição", "c2", "É o assistente social da instituição que recebe o estagiário.", "Quem é o supervisor de campo?"], ["supervisor acadêmico", "docente da universidade", "c3", "É o docente da universidade. Os dois supervisores são assistentes sociais.", "Quem é o supervisor acadêmico?"], ["Trabalho interdisciplinar", "integração de saberes", "c4", "Troca e integração de saberes entre profissões, com respeito à autonomia profissional.", "Qual trabalho integra saberes?"], ["equipes multiprofissionais", "autonomia mantida", "c5", "O assistente social mantém sua autonomia técnica e ética.", "O que se mantém em equipes multiprofissionais?"]]}];
+const $=id=>document.getElementById(id);
+const board=$("board"),sent=$("sent"),panel=$("panel"),ptr=$("ptr");
+let mode="e",L=0,sel=-1,rev=new Set(),qi=0,score=0,tries=0,answered=false,done=false,opts=[],wrong=new Set(),fb="";
+const lesson=()=>LESSONS[L];
+$("les").innerHTML=LESSONS.map((l,k)=>'<option value="'+k+'">'+l.t+'</option>').join("");
+
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function buildOpts(c){
+  const l=lesson(),pool=[...new Set(l.s.map(x=>x[1]).concat(l.p||[]))];
+  const d=shuffle(pool.filter(p=>p!==c)).slice(0,3);
+  return shuffle([c].concat(d));
+}
+function movePtr(){
+  if(sel<0||!sent.children[sel]){ptr.style.opacity=0;return}
+  const b=board.getBoundingClientRect(),r=sent.children[sel].querySelector(".w").getBoundingClientRect();
+  const x=r.left-b.left+r.width/2,y=r.top-b.top-4;
+  ptr.classList.toggle("flip",x>b.width*.6);
+  ptr.style.opacity=1;
+  ptr.style.transform="translate("+x+"px,"+y+"px)";
+}
+function render(){
+  const s=lesson().s;
+  sent.innerHTML=s.map((p,k)=>'<button class="sg'+(rev.has(k)?" on":"")+(k===sel?" cur":"")+'" data-k="'+k+'" style="--c:'+COL[p[2]]+'"'+(mode==="t"?" disabled":"")+'><span class="w">'+p[0]+'</span><span class="bar"></span><span class="chip">'+p[1]+'</span></button>').join("");
+  let h="";
+  if(mode==="e"){
+    if(sel<0)h="<p>Toque em uma parte da frase para ver o que ela representa.</p>";
+    else{const p=s[sel];h='<p class="fn" style="color:'+COL[p[2]]+'"><b>“'+p[0]+'”</b> → '+p[1]+"</p><p>"+p[3]+"</p>"}
+  }else if(done){
+    h="<p>Fim! Você acertou de primeira "+score+" de "+s.length+".</p>";
+  }else{
+    const p=s[qi];
+    h="<p>O que representa <b>“"+p[0]+"”</b>?</p><div class=\"opts\">"+opts.map(o=>'<button data-o="'+o+'" class="'+(answered&&o===p[1]?"ok":wrong.has(o)?"bad":"")+'">'+o+"</button>").join("")+"</div>";
+    if(fb)h+="<p>"+fb+"</p>";
+    if(answered)h+='<button class="nx" id="nx">'+(qi<s.length-1?"Próxima":"Ver resultado")+"</button>";
+  }
+  panel.innerHTML=h;
+  $("all").hidden=mode==="t";
+  $("clr").textContent=mode==="t"?"Refazer":"Limpar";
+  movePtr();
+}
+function startQ(){sel=qi;opts=buildOpts(lesson().s[qi][1]);answered=false;tries=0;wrong=new Set();fb="";render()}
+function reset(){
+  rev=new Set();sel=-1;qi=0;score=0;done=false;answered=false;fb="";wrong=new Set();
+  if(mode==="t")startQ();else render();
+}
+sent.onclick=e=>{
+  const b=e.target.closest(".sg");if(!b||mode!=="e")return;
+  sel=+b.dataset.k;rev.add(sel);render();
+};
+panel.onclick=e=>{
+  if(e.target.id==="nx"){
+    if(qi<lesson().s.length-1){qi++;startQ()}else{done=true;sel=-1;render()}
+    return;
+  }
+  const o=e.target.closest("[data-o]");if(!o||answered||mode!=="t")return;
+  const p=lesson().s[qi],v=o.dataset.o;
+  if(v===p[1]){answered=true;rev.add(qi);if(tries===0)score++;fb="✓ Correto! "+p[3]}
+  else{tries++;wrong.add(v);fb="✗ Ainda não. Dica: "+p[4]}
+  render();
+};
+function setMode(m){
+  mode=m;$("mE").setAttribute("aria-pressed",m==="e");$("mT").setAttribute("aria-pressed",m==="t");reset();
+}
+$("mE").onclick=()=>setMode("e");
+$("mT").onclick=()=>setMode("t");
+$("les").onchange=e=>{L=+e.target.value;reset()};
+$("all").onclick=()=>{lesson().s.forEach((_,k)=>rev.add(k));render()};
+$("clr").onclick=reset;
+addEventListener("resize",movePtr);
+render();
+</script>
+</body>
+</html>
