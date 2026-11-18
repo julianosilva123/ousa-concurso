@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lousa de Raciocínio Lógico</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f3efe6;--fg:#23201a;--muted:#6b6455;--btn:#23201a;--btn-fg:#f3efe6;--line:#cfc7b4;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#14181a;--fg:#ece8dc;--muted:#9a9484;--btn:#ece8dc;--btn-fg:#14181a;--line:#2e3532}}
+:root[data-theme="dark"]{--bg:#14181a;--fg:#ece8dc;--muted:#9a9484;--btn:#ece8dc;--btn-fg:#14181a;--line:#2e3532}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.45}
+main{max-width:1000px;margin:0 auto;padding:18px 14px 28px}
+h1{font-family:"Patrick Hand","Comic Sans MS",cursive;font-size:1.5rem;font-weight:400;margin:0 0 2px}
+.sub{color:var(--muted);font-size:.9rem;margin:0 0 14px}
+.ctl{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px}
+button,select{font:inherit;font-size:.95rem;padding:8px 13px;border-radius:8px;border:1px solid var(--btn);background:transparent;color:var(--fg);cursor:pointer}
+.tog{display:inline-flex}.tog button{border-radius:0}.tog button:first-child{border-radius:8px 0 0 8px}.tog button:last-child{border-radius:0 8px 8px 0;border-left:0}
+.tog button+button{border-left:0}.tog button[aria-pressed="true"]{background:var(--btn);color:var(--btn-fg)}
+button:focus-visible,select:focus-visible{outline:3px solid #3b82f6;outline-offset:2px}
+.board{position:relative;background:radial-gradient(ellipse at 30% 20%,#2a4d3d,#1b3429 70%);border:10px solid #8a6a45;border-radius:10px;padding:20px 18px 22px;color:#f4f1e6;font-family:"Patrick Hand","Comic Sans MS",cursive;overflow:hidden;box-shadow:inset 0 0 40px rgba(0,0,0,.35);min-height:380px}
+.title{text-align:center;font-size:1.3rem;color:#ffe27a;opacity:.9}
+.sent{display:flex;flex-wrap:wrap;justify-content:center;gap:10px 14px;margin:74px 0 22px}
+.sg{display:flex;flex-direction:column;align-items:center;gap:6px;border:0;background:none;color:#f4f1e6;font-family:inherit;padding:4px 6px;border-radius:8px;cursor:pointer}
+.sg:hover{outline:2px dashed rgba(244,241,230,.4)}
+.sg .w{font-size:clamp(1.6rem,4.4vw,2.6rem);line-height:1.1;transition:color .3s}
+.sg .bar{display:block;width:100%;height:5px;border-radius:3px;background:var(--c);opacity:.28;transition:opacity .3s}
+.sg .chip{font-size:.98rem;line-height:1.1;background:var(--c);color:#1b3429;padding:3px 9px;border-radius:12px;max-width:150px;text-align:center;opacity:0;transform:translateY(-4px);transition:opacity .35s,transform .35s}
+.sg.on .w{color:var(--c)}.sg.on .bar{opacity:1}.sg.on .chip{opacity:1;transform:none}
+.sg.cur{background:rgba(255,226,122,.13)}
+.sg:disabled{cursor:default;color:#f4f1e6}.sg:disabled:hover{outline:0}
+.panel{border-top:2px dashed rgba(244,241,230,.3);padding-top:14px;font-size:clamp(1.1rem,2.2vw,1.35rem);line-height:1.3;min-height:130px}
+.panel p{margin:0 0 10px}.fn b{font-weight:400}
+.opts{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:6px 0 10px}
+.opts button,.nx{font-family:inherit;font-size:1.1rem;border:2px solid rgba(244,241,230,.5);color:#f4f1e6;border-radius:10px;padding:8px 10px}
+.opts button.ok{border-color:#7be39a;background:rgba(123,227,154,.2)}
+.opts button.bad{border-color:#ff7b7b;background:rgba(255,123,123,.2);animation:sh .35s}
+.nx{background:#ffe27a;color:#1b3429;border-color:#ffe27a}
+@keyframes sh{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+#ptr{position:absolute;left:0;top:0;width:0;height:0;opacity:0;pointer-events:none;z-index:5;transition:transform .7s cubic-bezier(.4,.1,.2,1),opacity .3s}
+#ptr::before{content:"";position:absolute;left:-7px;top:-7px;width:14px;height:14px;border-radius:50%;background:#ffe27a;box-shadow:0 0 12px 4px rgba(255,226,122,.7)}
+.stick{position:absolute;left:-3px;top:0;width:6px;height:70px;border-radius:3px;background:linear-gradient(#e8c98f,#8a6a45);transform-origin:50% 0;transform:rotate(210deg);box-shadow:2px 2px 4px rgba(0,0,0,.4)}
+#ptr.flip .stick{transform:rotate(150deg)}
+.note{color:var(--muted);font-size:.85rem;margin-top:14px;max-width:72ch}
+@media (max-width:560px){.opts{grid-template-columns:1fr}.sent{margin-top:64px}}
+@media (prefers-reduced-motion:reduce){#ptr,.sg .chip,.sg .w,.sg .bar{transition:none}.opts button.bad{animation:none}}
+.kiko{float:right;width:64px;height:64px;border-radius:50%;object-fit:cover;border:3px solid #8a6a45;margin:0 0 6px 12px;box-shadow:0 2px 6px rgba(0,0,0,.3)}
+.back{margin:0 0 6px;font-size:.9rem}.back a{color:var(--muted)}
+select,option{background:var(--bg);color:var(--fg)}
+</style>
+</head>
+<body>
+<main>
+<img class="kiko" src="data:image/jpeg;base64,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" width="64" height="64" alt="Kiko, o cachorro">
+<p class="back"><a href="index.html">← Início</a></p>
+<h1>Lousa de Raciocínio Lógico</h1>
+<p class="sub">Aula interativa: toque nas partes, veja o que cada uma representa e, no modo Fixar macetes, revise até virar reflexo.</p>
+<div class="ctl">
+  <div class="tog" role="group" aria-label="Modo"><button id="mE" aria-pressed="true">Explorar</button><button id="mT" aria-pressed="false">Testar-me</button><button id="mM" aria-pressed="false">Fixar macetes</button></div>
+  <label>Aula <select id="les"></select></label>
+  <button id="all">Mostrar tudo</button>
+  <button id="clr">Limpar</button>
+</div>
+<div class="board" id="board">
+  <div class="title">Raciocínio Lógico</div>
+  <div class="sent" id="sent"></div>
+  <div class="panel" id="panel" aria-live="polite"></div>
+  <div id="ptr"><div class="stick"></div></div>
+</div>
+<p class="note">Sem voz: o ensino acontece pelos sinais na lousa. No modo Fixar macetes, o que você lembra volta depois de mais tempo e o que esquece volta antes (o progresso fica salvo neste aparelho). Confira o conteúdo com o edital e a bibliografia da sua banca.</p>
+</main>
+
+<script>
+/* [trecho, função, cor, explicação, dica] */
+const COL={c1:"#8ecbff",c2:"#ffe27a",c3:"#ff9fb2",c4:"#b6f0b1",c5:"#ffb877",c6:"#e0b3ff"};
+const LESSONS=[{"t": "1. Operações com conjuntos", "p": [], "s": [["A ∪ B", "união", "c1", "Reúne os elementos de A ou de B (ou de ambos).", "Junta tudo."], ["A ∩ B", "interseção", "c2", "Elementos que estão em A e em B ao mesmo tempo.", "Só o que é comum."], ["A − B", "diferença", "c3", "Elementos de A que não estão em B.", "Tira de A o que B tem."], ["n(A∪B) = n(A)+n(B)−n(A∩B)", "contagem da união", "c4", "Soma os dois e tira a interseção, que foi contada duas vezes.", "Evita contar duas vezes."], ["Diagrama de Venn", "comece pela interseção", "c5", "Preencha primeiro a interseção, depois só A, só B e, por fim, o que está fora.", "De dentro para fora."]]}, {"t": "2. Raciocínio lógico numérico e sequências", "p": [], "s": [["operações com reais", "ordem das operações", "c1", "Parênteses, potências e raízes, multiplicação e divisão, soma e subtração.", "Quem vem primeiro?"], ["diferença constante", "progressão aritmética", "c2", "Cada termo é o anterior mais r. Ex.: 3, 7, 11, 15.", "Soma sempre o mesmo."], ["razão constante", "progressão geométrica", "c3", "Cada termo é o anterior vezes q. Ex.: 2, 6, 18, 54.", "Multiplica sempre pelo mesmo."], ["soma dos dois anteriores", "Fibonacci", "c4", "Ex.: 1, 1, 2, 3, 5, 8, 13.", "Cada termo vem de dois."], ["duas sequências alternadas", "padrão intercalado", "c5", "Separe posições ímpares e pares. Ex.: 1, 10, 2, 20, 3, 30.", "Olhe de dois em dois."]]}, {"t": "3. Conceito de proposição", "p": [], "s": [["proposição", "frase com valor lógico", "c1", "Declarativa que pode ser julgada V ou F, nunca as duas.", "Dá para dizer verdadeiro ou falso."], ["x + 2 = 5", "sentença aberta", "c2", "Tem variável. Não é proposição até a variável receber valor.", "Depende de x."], ["Que horas são?", "não é proposição", "c3", "Interrogativas, imperativas e exclamativas não têm valor lógico.", "Pergunta ou ordem."], ["Brasília é a capital do Brasil", "proposição simples", "c4", "Uma só afirmação, sem conectivo.", "Não tem e, ou, se."], ["Chove e faz frio", "proposição composta", "c5", "Duas ou mais simples ligadas por conectivo.", "Tem conectivo."]]}, {"t": "4. Conectivos, negação e tabela-verdade", "p": [], "s": [["p ∧ q (e)", "conjunção", "c1", "Só é verdadeira se as duas forem V.", "E exige tudo."], ["p ∨ q (ou)", "disjunção", "c2", "Só é falsa se as duas forem F.", "Ou basta um."], ["p → q", "condicional", "c3", "Só é falsa em V → F.", "Vera Fischer: V→F dá F."], ["p ↔ q", "bicondicional", "c4", "Verdadeira quando p e q têm o mesmo valor.", "Iguais: verdadeiro."], ["~(p ∧ q) = ~p ∨ ~q", "De Morgan", "c5", "Nega tudo e troca E por OU. Também ~(p ∨ q) = ~p ∧ ~q.", "Nega e troca."], ["3 proposições simples", "8 linhas na tabela", "c6", "O número de linhas é 2 elevado ao número de simples.", "2 elevado a n."]]}, {"t": "5. Tautologias, contradições e contingências", "p": [], "s": [["tautologia", "sempre verdadeira", "c1", "Todas as linhas V. Ex.: p ∨ ~p.", "Tauto = sempre verdade."], ["contradição", "sempre falsa", "c2", "Todas as linhas F. Ex.: p ∧ ~p.", "Nunca é verdade."], ["contingência", "V e F", "c3", "Tem linhas verdadeiras e falsas.", "Depende dos valores."], ["negar uma tautologia", "dá contradição", "c4", "Negar o que é sempre V resulta no que é sempre F.", "Inverte tudo."], ["testar condicional", "tente forçar V → F", "c5", "Se for impossível tornar a condicional falsa, ela é tautologia.", "Procure o único caso falso."]]}, {"t": "6. Condição necessária e suficiente", "p": [], "s": [["p em “se p, então q”", "condição suficiente", "c1", "Basta p acontecer para q acontecer.", "Basta."], ["q em “se p, então q”", "condição necessária", "c2", "Sem q, p não pode acontecer.", "Sem isso, nada."], ["p somente se q", "é p → q", "c3", "“Somente se” aponta o necessário, que é o q.", "Não inverta."], ["p se e somente se q", "necessária e suficiente", "c4", "É a bicondicional: um vale se, e só se, o outro valer.", "Dupla via."], ["macete", "S vem antes de N", "c5", "No alfabeto, Suficiente vem antes de Necessária, como p vem antes de q.", "Ordem alfabética."]]}, {"t": "7. Argumentação lógica", "p": [], "s": [["premissas", "o que se assume verdadeiro", "c1", "São as afirmações de partida do argumento.", "O ponto de partida."], ["conclusão", "o que se quer provar", "c2", "É a afirmação que decorre das premissas.", "O ponto de chegada."], ["argumento válido", "conclusão decorre das premissas", "c3", "Se todas as premissas são V, a conclusão tem de ser V.", "Forma, não conteúdo."], ["validade não é verdade", "pegadinha", "c4", "Um argumento pode ser válido e ter conclusão falsa, se uma premissa for falsa.", "Não confunda."], ["como testar", "premissas V e conclusão F?", "c5", "Assuma as premissas V. Se a conclusão puder ser F, o argumento é inválido.", "Tente derrubar."]]}, {"t": "8. Estruturas lógicas e diagramas", "p": [], "s": [["Todo A é B", "A dentro de B", "c1", "O círculo de A fica inteiro dentro do de B.", "Um círculo dentro do outro."], ["Algum A é B", "interseção não vazia", "c2", "Os círculos se cruzam: há pelo menos um elemento em comum.", "Pelo menos um."], ["Nenhum A é B", "conjuntos separados", "c3", "Os círculos não se tocam.", "Sem nada em comum."], ["Algum A não é B", "parte de A fora de B", "c4", "Pelo menos um elemento de A está fora de B.", "Sobra algo de A."], ["Todo A é B e todo B é C", "conclusão: todo A é C", "c5", "É o silogismo clássico: A dentro de B dentro de C.", "Encadeie."]]}, {"t": "9. Equivalências e implicações", "p": [], "s": [["p → q ≡ ~q → ~p", "contrapositiva", "c1", "Inverte e nega os dois. É sempre equivalente.", "Inverte e nega."], ["p → q ≡ ~p ∨ q", "NEMA", "c2", "Nega a 1ª OU Mantém a 2ª.", "NE-MA."], ["~(p → q) ≡ p ∧ ~q", "MANE", "c3", "Mantém a 1ª E Nega a 2ª.", "MA-NE."], ["p ↔ q ≡ (p→q) ∧ (q→p)", "bicondicional em duas condicionais", "c4", "A bicondicional vale nos dois sentidos.", "Ida e volta."], ["q → p", "recíproca: não equivale", "c5", "Só inverter sem negar muda o sentido.", "Pegadinha clássica."], ["~(p ↔ q)", "ou p ou q", "c6", "A negação da bicondicional é a disjunção exclusiva.", "Valores diferentes."]]}, {"t": "10. Quantificadores", "p": [], "s": [["negação de “Todo A é B”", "Algum A não é B", "c1", "Basta um contraexemplo para derrubar o “todo”.", "Um contraexemplo."], ["negação de “Algum A é B”", "Nenhum A é B", "c2", "Se não existe nenhum, o “algum” cai.", "Zero casos."], ["negação de “Nenhum A é B”", "Algum A é B", "c3", "Basta um para derrubar o “nenhum”.", "Existe um."], ["Todo × Nenhum", "contrárias, não negação", "c4", "“Todo A é B” e “Nenhum A é B” não são negação uma da outra.", "Pegadinha."], ["existe pelo menos um", "equivale a algum", "c5", "Tem o mesmo valor lógico de “algum”.", "Mesmo sentido."]]}, {"t": "11. Princípios de contagem", "p": [], "s": [["princípio multiplicativo", "etapas sucessivas: E", "c1", "Multiplique as possibilidades de cada etapa.", "E multiplica."], ["princípio aditivo", "alternativas excludentes: OU", "c2", "Se escolhe uma coisa ou outra, some.", "OU soma."], ["3 camisas e 4 calças", "3 × 4 = 12", "c3", "Escolher camisa e calça são etapas: multiplica.", "Duas etapas."], ["3 ônibus ou 2 trens", "3 + 2 = 5", "c4", "Usa um meio ou outro: soma.", "Uma escolha só."], ["restrição", "comece pela mais restrita", "c5", "Resolva primeiro a posição com condição.", "Mais difícil primeiro."]]}, {"t": "12. Arranjos, combinações e permutações", "p": [], "s": [["n!", "permutação simples", "c1", "Ordenar n elementos distintos: n × (n−1) × … × 1.", "Todos na fila."], ["A(n,p) = n! ÷ (n−p)!", "arranjo: ordem importa", "c2", "Escolher p de n em que a ordem muda o resultado.", "Ordem importa."], ["C(n,p) = n! ÷ [p!(n−p)!]", "combinação: ordem não importa", "c3", "Escolher grupos em que a ordem não muda nada.", "Grupo."], ["senha, fila, pódio", "pense em arranjo", "c4", "Nesses casos, trocar a ordem gera outro resultado.", "A ordem muda."], ["comissão, time, grupo", "pense em combinação", "c5", "Nesses casos, o mesmo grupo vale, em qualquer ordem.", "A ordem não muda."], ["ANA", "permutação com repetição", "c6", "3! ÷ 2! = 3 anagramas. Divida pelas repetições.", "Há letra repetida."]]}, {"t": "13. Noções de probabilidade", "p": [], "s": [["P(A)", "favoráveis ÷ possíveis", "c1", "Casos favoráveis divididos pelos casos possíveis.", "Parte do todo."], ["P(A ∪ B)", "P(A)+P(B)−P(A∩B)", "c2", "Soma e tira a interseção.", "Não conte duas vezes."], ["eventos excludentes", "as probabilidades se somam", "c3", "Não acontecem juntos, então P(A∩B)=0.", "Sem interseção."], ["eventos independentes", "as probabilidades se multiplicam", "c4", "P(A∩B) = P(A) × P(B).", "E multiplica."], ["P(não A)", "1 − P(A)", "c5", "O complementar. Útil em “pelo menos um”.", "Complemento."], ["limites", "entre 0 e 1", "c6", "0 é evento impossível e 1 é evento certo.", "Nunca passa de 1."]]}];
+const MAC=[["Condicional", "Quando p → q é falsa?", "Só em V → F (a ‘Vera Fischer’: V e F dá F)."], ["Condicional", "Equivalência de p → q em 2 formas", "~q → ~p (contrapositiva) e ~p ∨ q (NEMA: Nega 1ª ou Mantém 2ª)."], ["Condicional", "Negação de p → q", "MANE: Mantém a 1ª E Nega a 2ª. Resultado: p ∧ ~q."], ["De Morgan", "Negação de ‘p e q’ e de ‘p ou q’", "Nega tudo e troca o conectivo: ~p ∨ ~q e ~p ∧ ~q."], ["Conectivos", "E, OU: quando falham?", "E só é V se as duas forem V. OU só é F se as duas forem F."], ["Bicondicional", "Quando p ↔ q é verdadeira? E sua negação?", "Quando p e q têm o mesmo valor. A negação é ‘ou p ou q’ (valores diferentes)."], ["Tabela-verdade", "Quantas linhas com n simples?", "2 elevado a n. Com 3 simples, 8 linhas."], ["Tautologia", "Tautologia, contradição e contingência", "Sempre V, sempre F, e mistura de V e F."], ["Suficiente e necessária", "Em ‘se p, então q’, quem é quem?", "Suficiente = p. Necessária = q. S vem antes de N, como p antes de q."], ["Quantificadores", "Negação de Todo, Algum e Nenhum", "Todo → Algum não. Algum → Nenhum. Nenhum → Algum."], ["Argumentos", "Como testar a validade?", "Assuma as premissas V. Se a conclusão puder ser F, é inválido."], ["Contagem", "Quando multiplicar e quando somar?", "E (etapas) multiplica. OU (alternativas) soma."], ["Combinatória", "Arranjo ou combinação?", "Ordem importa (fila, senha, pódio): arranjo. Não importa (comissão, time): combinação."], ["Permutação", "Anagramas com letras repetidas", "n! dividido pelo fatorial de cada repetição. ANA: 3!/2! = 3."], ["Probabilidade", "União, independentes e complementar", "P(A∪B)=P(A)+P(B)−P(A∩B). Independentes: multiplica. Complementar: 1−P."], ["Conjuntos", "Como resolver problemas com Venn?", "Comece pela interseção e vá para fora. n(A∪B)=n(A)+n(B)−n(A∩B)."], ["Sequências", "Como descobrir o padrão?", "Teste diferença constante, razão constante, Fibonacci e duas sequências intercaladas."], ["Proposição", "O que não é proposição?", "Perguntas, ordens, exclamações e sentenças abertas (com variável)."]];
+const DIA=()=>Math.floor(Date.now()/864e5),GAP=[0,1,3,7,15];
+const mget=()=>{try{return JSON.parse(localStorage.getItem("rlmac")||"{}")}catch(e){return{}}};
+const mput=v=>{try{localStorage.setItem("rlmac",JSON.stringify(v))}catch(e){}};
+const mdue=()=>{const v=mget(),d=DIA();return MAC.map((_,i)=>i).filter(i=>!v[i]||v[i][1]<=d)};
+let mq=[],mi=0,mshow=false,mok=0;
+function renderM(){
+  sent.innerHTML="";ptr.style.opacity=0;
+  $("les").parentElement.hidden=true;$("all").hidden=true;$("clr").textContent="Revisar tudo";
+  let h="";
+  if(mi>=mq.length){
+    const v=mget(),n=[0,0,0,0,0];MAC.forEach((_,i)=>{n[v[i]?v[i][0]:0]++});
+    h="<p>"+(mq.length?"Rodada concluída: você lembrou "+mok+" de "+mq.length+".":"Nada para revisar agora. Volte amanhã.")+"</p><p>Dominados (caixa 4): "+n[4]+" de "+MAC.length+". Em aprendizado: "+(MAC.length-n[4])+".</p>";
+  }else{
+    const m=MAC[mq[mi]];
+    h="<p style=\"color:"+COL.c2+"\"><b>"+m[0]+"</b> ("+(mi+1)+" de "+mq.length+")</p><p>"+m[1]+"</p>";
+    if(!mshow)h+='<button class="nx" id="mv">Ver macete</button>';
+    else h+="<p style=\"color:"+COL.c4+"\">"+m[2]+'</p><button class="nx" id="mo">Lembrei</button> <button class="nx" id="mn">Esqueci</button>';
+  }
+  panel.innerHTML=h;
+}
+function startM(all){mq=shuffle(all?MAC.map((_,i)=>i):mdue());mi=0;mshow=false;mok=0}
+const $=id=>document.getElementById(id);
+const board=$("board"),sent=$("sent"),panel=$("panel"),ptr=$("ptr");
+let mode="e",L=0,sel=-1,rev=new Set(),qi=0,score=0,tries=0,answered=false,done=false,opts=[],wrong=new Set(),fb="";
+const lesson=()=>LESSONS[L];
+$("les").innerHTML=LESSONS.map((l,k)=>'<option value="'+k+'">'+l.t+'</option>').join("");
+
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function buildOpts(c){
+  const l=lesson(),pool=[...new Set(l.s.map(x=>x[1]).concat(l.p||[]))];
+  const d=shuffle(pool.filter(p=>p!==c)).slice(0,3);
+  return shuffle([c].concat(d));
+}
+function movePtr(){
+  if(sel<0||!sent.children[sel]){ptr.style.opacity=0;return}
+  const b=board.getBoundingClientRect(),r=sent.children[sel].querySelector(".w").getBoundingClientRect();
+  const x=r.left-b.left+r.width/2,y=r.top-b.top-4;
+  ptr.classList.toggle("flip",x>b.width*.6);
+  ptr.style.opacity=1;
+  ptr.style.transform="translate("+x+"px,"+y+"px)";
+}
+function render(){
+  if(mode==="m"){renderM();return}
+  $("les").parentElement.hidden=false;
+  const s=lesson().s;
+  sent.innerHTML=s.map((p,k)=>'<button class="sg'+(rev.has(k)?" on":"")+(k===sel?" cur":"")+'" data-k="'+k+'" style="--c:'+COL[p[2]]+'"'+(mode==="t"?" disabled":"")+'><span class="w">'+p[0]+'</span><span class="bar"></span><span class="chip">'+p[1]+'</span></button>').join("");
+  let h="";
+  if(mode==="e"){
+    if(sel<0)h="<p>Toque em uma parte da frase para ver o que ela representa.</p>";
+    else{const p=s[sel];h='<p class="fn" style="color:'+COL[p[2]]+'"><b>“'+p[0]+'”</b> → '+p[1]+"</p><p>"+p[3]+"</p>"}
+  }else if(done){
+    h="<p>Fim! Você acertou de primeira "+score+" de "+s.length+".</p>";
+  }else{
+    const p=s[qi];
+    h="<p>O que representa <b>“"+p[0]+"”</b>?</p><div class=\"opts\">"+opts.map(o=>'<button data-o="'+o+'" class="'+(answered&&o===p[1]?"ok":wrong.has(o)?"bad":"")+'">'+o+"</button>").join("")+"</div>";
+    if(fb)h+="<p>"+fb+"</p>";
+    if(answered)h+='<button class="nx" id="nx">'+(qi<s.length-1?"Próxima":"Ver resultado")+"</button>";
+  }
+  panel.innerHTML=h;
+  $("all").hidden=mode==="t";
+  $("clr").textContent=mode==="t"?"Refazer":"Limpar";
+  movePtr();
+}
+function startQ(){sel=qi;opts=buildOpts(lesson().s[qi][1]);answered=false;tries=0;wrong=new Set();fb="";render()}
+function reset(){
+  if(mode==="m"){startM(false);render();return}
+  rev=new Set();sel=-1;qi=0;score=0;done=false;answered=false;fb="";wrong=new Set();
+  if(mode==="t")startQ();else render();
+}
+sent.onclick=e=>{
+  const b=e.target.closest(".sg");if(!b||mode!=="e")return;
+  sel=+b.dataset.k;rev.add(sel);render();
+};
+panel.onclick=e=>{
+  if(mode==="m"){
+    const id=e.target.id;
+    if(id==="mv"){mshow=true}
+    else if(id==="mo"||id==="mn"){
+      const v=mget(),i=mq[mi],b=v[i]?v[i][0]:0,ok=id==="mo";
+      const nb=ok?Math.min(4,b+1):1;v[i]=[nb,DIA()+GAP[nb]];mput(v);if(ok)mok++;mi++;mshow=false;
+    }else return;
+    render();return;
+  }
+  if(e.target.id==="nx"){
+    if(qi<lesson().s.length-1){qi++;startQ()}else{done=true;sel=-1;render()}
+    return;
+  }
+  const o=e.target.closest("[data-o]");if(!o||answered||mode!=="t")return;
+  const p=lesson().s[qi],v=o.dataset.o;
+  if(v===p[1]){answered=true;rev.add(qi);if(tries===0)score++;fb="✓ Correto! "+p[3]}
+  else{tries++;wrong.add(v);fb="✗ Ainda não. Dica: "+p[4]}
+  render();
+};
+function setMode(m){
+  mode=m;$("mE").setAttribute("aria-pressed",m==="e");$("mT").setAttribute("aria-pressed",m==="t");$("mM").setAttribute("aria-pressed",m==="m");reset();
+}
+$("mE").onclick=()=>setMode("e");
+$("mT").onclick=()=>setMode("t");
+$("mM").onclick=()=>setMode("m");
+$("les").onchange=e=>{L=+e.target.value;reset()};
+$("all").onclick=()=>{lesson().s.forEach((_,k)=>rev.add(k));render()};
+$("clr").onclick=()=>{if(mode==="m"){startM(true);render()}else reset()};
+addEventListener("resize",movePtr);
+render();
+</script>
+</body>
+</html>
