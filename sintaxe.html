@@ -95,9 +95,23 @@ const LESSONS=[
 {t:"Predicado nominal",s:[
 ["Os candidatos","sujeito","c1","Sujeito simples. O núcleo é “candidatos”.","Quem estava ansioso?"],
 ["estavam","verbo de ligação","c2","Não indica ação: liga o sujeito a uma característica.","Não indica ação."],
-["ansiosos","predicativo do sujeito","c6","Atribui uma qualidade ao sujeito e concorda com ele em gênero e número.","Diz como o sujeito está."]]}
+["ansiosos","predicativo do sujeito","c6","Atribui uma qualidade ao sujeito e concorda com ele em gênero e número.","Diz como o sujeito está."]]},
+{t:"Vocativo e sujeito oculto",s:[
+["Candidatos","vocativo","c6","Chama o interlocutor. Fica isolado por vírgula e não é sujeito.","Quem está sendo chamado?"],
+["estudem","verbo intransitivo","c2","Não pede complemento. O sujeito é “vocês”, oculto.","Não pede complemento."],
+["todos os dias","adjunto adverbial de tempo","c4","Indica quando a ação ocorre.","Estudem quando?"]]},
+{t:"Aposto e objeto indireto",s:[
+["Maria","sujeito","c1","Sujeito simples. O núcleo é “Maria”.","Quem passou?"],
+["aluna da turma","aposto","c6","Explica o termo anterior e vem entre vírgulas.","Explica quem é Maria."],
+["passou","verbo transitivo indireto","c2","Quem passa, passa em algo: o verbo pede preposição.","Ele pede preposição."],
+["no concurso","objeto indireto","c5","Passou em quê? Há preposição (em + o = no).","Passou em quê? Há preposição."]]},
+{t:"Complemento nominal",s:[
+["A leitura","sujeito","c1","Sujeito simples. O núcleo é “leitura” e “do edital” completa esse núcleo.","Quem exige atenção?"],
+["do edital","complemento nominal","c6","Completa um nome (leitura). O edital recebe a ação de ler.","Recebe a ação? Complemento nominal. Pratica? Adjunto adnominal."],
+["exige","verbo transitivo direto","c2","Pede complemento sem preposição.","Exige o quê?"],
+["atenção","objeto direto","c3","Sem preposição.","Exige o quê? Não há preposição."]]}
 ];
-const POOL=["verbo transitivo direto","objeto direto","objeto indireto","adjunto adverbial de tempo","predicativo do sujeito","verbo de ligação","agente da passiva","sujeito","complemento nominal","adjunto adnominal"];
+const POOL=["verbo transitivo direto","objeto direto","objeto indireto","adjunto adverbial de tempo","predicativo do sujeito","verbo de ligação","agente da passiva","sujeito","complemento nominal","adjunto adnominal","vocativo","aposto","verbo transitivo indireto","verbo intransitivo"];
 const $=id=>document.getElementById(id);
 const board=$("board"),sent=$("sent"),panel=$("panel"),ptr=$("ptr");
 let mode="e",L=0,sel=-1,rev=new Set(),qi=0,score=0,tries=0,answered=false,done=false,opts=[],wrong=new Set(),fb="";

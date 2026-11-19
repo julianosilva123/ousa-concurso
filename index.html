@@ -78,6 +78,16 @@ header{align-items:center}
 @keyframes balanca{0%{transform:rotate(-3.5deg)}28%{transform:rotate(2.4deg)}52%{transform:rotate(-1.2deg)}76%{transform:rotate(.5deg)}100%{transform:rotate(0)}}
 @media (max-width:680px){.sub::before{left:-9px}}
 @media (prefers-reduced-motion:reduce){.placa{animation:none}.card:hover{transform:none}}
+
+.comeco{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px;background:var(--hi);border:2px solid var(--line);border-left:8px solid var(--wood);border-radius:12px;padding:16px 20px;margin:0 0 clamp(26px,4vw,38px)}
+.comeco .ct{flex:1;min-width:230px}
+.comeco p{margin:0}
+.comeco .cl{font-family:"Patrick Hand","Comic Sans MS",cursive;font-size:1.45rem;line-height:1.2}
+.comeco .cs{color:var(--muted);font-size:.95rem;margin-top:2px}
+.pb{height:6px;background:var(--line);border-radius:3px;overflow:hidden;margin-top:10px;max-width:360px}
+.pb i{display:block;height:100%;width:0;background:var(--wood);transition:width .4s}
+.visto{position:absolute;right:14px;bottom:10px;z-index:2;font-family:system-ui,sans-serif;font-size:.8rem;color:var(--ch);border:1.5px solid var(--ch);border-radius:999px;padding:0 10px 1px}
+@media (prefers-reduced-motion:reduce){.pb i{transition:none}}
 </style>
 </head>
 <body>
@@ -97,15 +107,16 @@ header{align-items:center}
 <p class="sub">Lousas interativas para estudar no seu ritmo. Escolha uma matéria, explore o conteúdo e depois teste o que aprendeu.</p>
 </div>
 </header>
+<section class="comeco" id="comeco" aria-live="polite"><div class="ct"><p class="cl" id="cl"></p><p class="cs" id="cs"></p><div class="pb"><i id="pi"></i></div></div><a class="btn cheio" id="cb" href="direito.html">Começar</a></section>
 <div class="grid">
   <a class="card c1" href="direito.html"><h2>Lousa de Direito Administrativo</h2><p>Outorga, delegação, desconcentração e princípios, em aula interativa sem voz, com modo explorar e testar.</p></a>
   <a class="card c2" href="sintaxe.html"><h2>Lousa de Português: Sintaxe</h2><p>Análise sintática interativa, com modo explorar e modo testar.</p></a>
   <a class="card c5" href="raciociniologico.html" data-premium><h2>Lousa de Raciocínio Lógico</h2><p>Conjuntos, proposições, equivalências, quantificadores, contagem e probabilidade, com modo Fixar macetes para não esquecer.</p></a>
-  <a class="card c3" href="treino.html" data-premium><h2>Treino: banco de questões</h2><p>Sorteie questões por disciplina e tema e acompanhe seu placar.</p></a>
+  <a class="card c0" href="treino.html" data-premium><h2>Treino: banco de questões</h2><p>Sorteie questões por disciplina e tema e acompanhe seu placar.</p></a>
   <a class="card c4" href="matogrosso.html"><h2>Mato Grosso: Geografia e História</h2><p>Localização, ocupação, domínios naturais e fronteira agrícola em lousa interativa.</p></a>
-  <a class="card c5" href="gramatica.html"><h2>Português: Gramática</h2><p>Crase, concordância, regência, pontuação, acentuação, colocação pronominal e coesão.</p></a>
+  <a class="card c2" href="gramatica.html"><h2>Português: Gramática</h2><p>Crase, concordância, regência, pontuação, acentuação, colocação pronominal e coesão.</p></a>
   <a class="card c6" href="cuiaba.html"><h2>Legislação: Câmara de Cuiabá</h2><p>Lei Orgânica, Estatuto dos Servidores e Plano de Cargos em lousas interativas.</p></a>
-  <a class="card c1" href="servicosocial.html" data-premium><h2>Lousa de Serviço Social</h2><p>Questão social, Lei 8.662, Código de Ética, seguridade, SUAS, ECA, Estatuto da Pessoa Idosa e LBI, com modo explorar e testar.</p></a>
+  <a class="card c3" href="servicosocial.html" data-premium><h2>Lousa de Serviço Social</h2><p>Questão social, Lei 8.662, Código de Ética, seguridade, SUAS, ECA, Estatuto da Pessoa Idosa e LBI, com modo explorar e testar.</p></a>
 </div>
 <p class="dica">Sugestão de rotina: estude uma lousa, depois confira no Treino se fixou.</p>
 <p class="note">Material de estudo em construção. Confira sempre o conteúdo com a lei e a bibliografia da sua banca.</p>
@@ -124,6 +135,30 @@ document.querySelectorAll(".card[data-premium]").forEach(function(c){
   if(!p)c.addEventListener("click",function(e){e.preventDefault();location.href="premium.html"});
 });
 Auth.renderAcc(document.getElementById("acc"));
+})();
+</script>
+<script>
+(function(){
+var K="kiko_prog",cards=[].slice.call(document.querySelectorAll(".card"));
+function ler(){try{return JSON.parse(localStorage.getItem(K))||{a:[],u:""}}catch(e){return{a:[],u:""}}}
+function gravar(p){try{localStorage.setItem(K,JSON.stringify(p))}catch(e){}}
+function tit(c){return c.querySelector("h2").textContent}
+function mostrar(){
+  var p=ler(),n=p.a.length,t=cards.length,last=cards.filter(function(c){return c.getAttribute("href")===p.u})[0];
+  var cl=document.getElementById("cl"),cs=document.getElementById("cs"),cb=document.getElementById("cb");
+  document.getElementById("pi").style.width=(n/t*100)+"%";
+  if(!n||!last){cl.textContent="Primeira vez aqui? Comece pela Lousa de Direito Administrativo.";cs.textContent="Aula guiada, passo a passo. Depois confira no Treino.";cb.textContent="Começar";cb.href="direito.html"}
+  else{cl.textContent=n>=t?"Você já abriu todas as lousas":"Continuar de onde parou";cs.textContent=tit(last)+" · "+n+" de "+t+" lousas abertas";cb.textContent=n>=t?"Rever a última":"Continuar";cb.href=p.u}
+  cards.forEach(function(c){
+    var ja=p.a.indexOf(c.getAttribute("href"))>-1,v=c.querySelector(".visto");
+    if(ja&&!v){v=document.createElement("span");v.className="visto";v.textContent="Visitada";c.appendChild(v)}
+  });
+}
+function registrar(h){var p=ler();if(p.a.indexOf(h)<0)p.a.push(h);p.u=h;gravar(p)}
+cards.forEach(function(c){c.addEventListener("click",function(e){if(!e.defaultPrevented)registrar(c.getAttribute("href"))})});
+document.getElementById("cb").addEventListener("click",function(){var h=this.getAttribute("href");if(h)registrar(h)});
+mostrar();
+addEventListener("pageshow",mostrar);
 })();
 </script>
 </body>
