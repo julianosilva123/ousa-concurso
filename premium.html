@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Seja premium · Estudo para concursos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tema.css">
+</head>
+<body>
+<nav class="topo">
+  <a class="marca" href="index.html">Estudo para concursos</a>
+  <div class="acc" id="acc"></div>
+</nav>
+<main class="pg">
+  <span class="demo">Modo demonstração: nenhuma cobrança é feita e os valores são só de exemplo.</span>
+  <h1 id="tit">Seja premium</h1>
+  <p class="sub" id="sub">Libere o banco de questões do Treino e as lousas de Raciocínio Lógico e Serviço Social.</p>
+
+  <div class="conta" id="conta" hidden>
+    <div>
+      <p class="quem" id="quem"></p>
+      <p class="det" id="det"></p>
+    </div>
+    <div id="acoes"></div>
+  </div>
+  <div class="aviso" id="aviso" hidden></div>
+
+  <div class="planos">
+    <section class="quadro plano p1">
+      <h2>Grátis</h2>
+      <p class="preco">R$ 0</p>
+      <p class="eq">Para conhecer o método</p>
+      <ul>
+        <li>Direito Administrativo</li>
+        <li>Português: Sintaxe e Gramática</li>
+        <li>Mato Grosso e Legislação de Cuiabá</li>
+        <li>Modos explorar e testar</li>
+      </ul>
+      <a class="btn" id="b-gratis" href="login.html?volta=premium.html">Começar grátis</a>
+    </section>
+    <section class="quadro plano p2">
+      <h2>Mensal</h2>
+      <p class="preco">R$ 19,90 <small>/mês</small></p>
+      <p class="eq">Cancele quando quiser</p>
+      <ul>
+        <li>Tudo do plano grátis</li>
+        <li>Treino: banco de questões completo</li>
+        <li>Lousa de Raciocínio Lógico</li>
+        <li>Lousa de Serviço Social</li>
+      </ul>
+      <button class="btn" type="button" data-plano="mensal">Assinar</button>
+    </section>
+    <section class="quadro plano p3 destaque">
+      <span class="fita">Melhor custo</span>
+      <h2>Anual</h2>
+      <p class="preco">R$ 149 <small>/ano</small></p>
+      <p class="eq">Equivale a R$ 12,42 por mês</p>
+      <ul>
+        <li>Tudo do plano mensal</li>
+        <li>Lousas novas assim que saírem</li>
+        <li>Preço fixo por 12 meses</li>
+      </ul>
+      <button class="btn cheio" type="button" data-plano="anual">Assinar</button>
+    </section>
+  </div>
+  <p class="rodape">Material de estudo em construção. Confira sempre o conteúdo com a lei e a bibliografia da sua banca.</p>
+</main>
+<script src="auth.js"></script>
+<script>
+var $=function(i){return document.getElementById(i)};
+var nomes={mensal:"Mensal",anual:"Anual"};
+function btn(txt,fn,cls){var b=document.createElement("button");b.type="button";b.className="btn "+(cls||"");b.textContent=txt;b.onclick=fn;return b}
+function assinar(p){
+  var u=Auth.get();
+  if(!u){location.href="login.html?volta=premium.html";return}
+  u.premium=true;u.plano=p;Auth.set(u);
+  desenhar("Premium ativado nesta demonstração. Nenhuma cobrança foi feita. Já pode abrir o Treino e as lousas liberadas.");
+}
+function cancelar(){
+  var u=Auth.get();if(!u)return;
+  u.premium=false;delete u.plano;Auth.set(u);desenhar("Premium desativado.");
+}
+function desenhar(msg){
+  var u=Auth.get(),p=Auth.premium();
+  Auth.renderAcc($("acc"));
+  $("conta").hidden=!u;
+  $("tit").textContent=u?"Minha conta":"Seja premium";
+  if(u){
+    $("quem").textContent=u.nome;
+    $("det").textContent=u.email+" · Plano "+(p?"premium "+(nomes[u.plano]||"").toLowerCase():"grátis");
+    var a=$("acoes");a.textContent="";
+    if(p){
+      var v=document.createElement("a");v.className="btn cheio";v.href="index.html";v.textContent="Ir para as lousas";a.appendChild(v);
+      a.appendChild(document.createTextNode(" "));
+      a.appendChild(btn("Cancelar premium",cancelar));
+    }
+  }
+  $("b-gratis").textContent=u?"Seu plano atual":"Começar grátis";
+  $("b-gratis").style.display=(u&&p)?"none":"";
+  if(u&&!p){$("b-gratis").removeAttribute("href");$("b-gratis").setAttribute("aria-disabled","true")}
+  document.querySelectorAll("[data-plano]").forEach(function(b){
+    var pl=b.getAttribute("data-plano");
+    b.textContent=(u&&p&&u.plano===pl)?"Seu plano":(u?"Assinar (demonstração)":"Entrar para assinar");
+    b.disabled=!!(u&&p&&u.plano===pl);
+    b.onclick=function(){assinar(pl)};
+  });
+  $("aviso").hidden=!msg;$("aviso").textContent=msg||"";
+}
+desenhar();
+</script>
+</body>
+</html>

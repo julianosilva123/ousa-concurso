@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tema.css">
 <style>
 :root{--bg:#f3efe6;--fg:#23201a;--muted:#6b6455;--line:#cfc7b4;--wood:#8a6a45;--wood-dark:#6d5233;
 box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -80,6 +81,7 @@ header{align-items:center}
 </style>
 </head>
 <body>
+<nav class="topo"><a class="marca" href="index.html">Estudo para concursos</a><div class="acc" id="acc"></div></nav>
 <main>
 <div class="placa-wrap">
 <div class="placa" role="note" aria-label="Concurso em estudo: Câmara de Cuiabá">
@@ -98,15 +100,31 @@ header{align-items:center}
 <div class="grid">
   <a class="card c1" href="direito.html"><h2>Lousa de Direito Administrativo</h2><p>Outorga, delegação, desconcentração e princípios, em aula interativa sem voz, com modo explorar e testar.</p></a>
   <a class="card c2" href="sintaxe.html"><h2>Lousa de Português: Sintaxe</h2><p>Análise sintática interativa, com modo explorar e modo testar.</p></a>
-  <a class="card c5" href="raciociniologico.html"><h2>Lousa de Raciocínio Lógico</h2><p>Conjuntos, proposições, equivalências, quantificadores, contagem e probabilidade, com modo Fixar macetes para não esquecer.</p></a>
-  <a class="card c3" href="treino.html"><h2>Treino: banco de questões</h2><p>Sorteie questões por disciplina e tema e acompanhe seu placar.</p></a>
+  <a class="card c5" href="raciociniologico.html" data-premium><h2>Lousa de Raciocínio Lógico</h2><p>Conjuntos, proposições, equivalências, quantificadores, contagem e probabilidade, com modo Fixar macetes para não esquecer.</p></a>
+  <a class="card c3" href="treino.html" data-premium><h2>Treino: banco de questões</h2><p>Sorteie questões por disciplina e tema e acompanhe seu placar.</p></a>
   <a class="card c4" href="matogrosso.html"><h2>Mato Grosso: Geografia e História</h2><p>Localização, ocupação, domínios naturais e fronteira agrícola em lousa interativa.</p></a>
   <a class="card c5" href="gramatica.html"><h2>Português: Gramática</h2><p>Crase, concordância, regência, pontuação, acentuação, colocação pronominal e coesão.</p></a>
   <a class="card c6" href="cuiaba.html"><h2>Legislação: Câmara de Cuiabá</h2><p>Lei Orgânica, Estatuto dos Servidores e Plano de Cargos em lousas interativas.</p></a>
-  <a class="card c1" href="servicosocial.html"><h2>Lousa de Serviço Social</h2><p>Questão social, Lei 8.662, Código de Ética, seguridade, SUAS, ECA, Estatuto da Pessoa Idosa e LBI, com modo explorar e testar.</p></a>
+  <a class="card c1" href="servicosocial.html" data-premium><h2>Lousa de Serviço Social</h2><p>Questão social, Lei 8.662, Código de Ética, seguridade, SUAS, ECA, Estatuto da Pessoa Idosa e LBI, com modo explorar e testar.</p></a>
 </div>
 <p class="dica">Sugestão de rotina: estude uma lousa, depois confira no Treino se fixou.</p>
 <p class="note">Material de estudo em construção. Confira sempre o conteúdo com a lei e a bibliografia da sua banca.</p>
 </main>
+<script src="auth.js"></script>
+<script>
+(function(){
+var p=Auth.premium();
+var lock='<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
+var open='<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 7.5-1.9"/></svg>';
+document.querySelectorAll(".card[data-premium]").forEach(function(c){
+  var b=document.createElement("span");
+  b.className="cadeado"+(p?" livre":"");
+  b.innerHTML=(p?open:lock)+(p?"Liberado":"Premium");
+  c.appendChild(b);
+  if(!p)c.addEventListener("click",function(e){e.preventDefault();location.href="premium.html"});
+});
+Auth.renderAcc(document.getElementById("acc"));
+})();
+</script>
 </body>
 </html>

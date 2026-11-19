@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Entrar · Estudo para concursos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tema.css">
+</head>
+<body>
+<nav class="topo">
+  <a class="marca" href="index.html">Estudo para concursos</a>
+  <div class="acc" id="acc"></div>
+</nav>
+<main class="pg">
+  <span class="demo">Modo demonstração: qualquer e-mail funciona e os dados ficam só neste navegador.</span>
+  <div class="quadro login">
+    <div class="abas" role="tablist">
+      <button class="aba" role="tab" id="t-entrar" aria-selected="true" type="button">Entrar</button>
+      <button class="aba" role="tab" id="t-criar" aria-selected="false" type="button">Criar conta</button>
+    </div>
+    <form id="f" novalidate>
+      <div class="campo" id="c-nome" hidden>
+        <label for="nome">Seu nome</label>
+        <input id="nome" type="text" autocomplete="name">
+      </div>
+      <div class="campo">
+        <label for="email">E-mail</label>
+        <input id="email" type="email" autocomplete="email" inputmode="email">
+      </div>
+      <div class="campo">
+        <label for="senha">Senha</label>
+        <input id="senha" type="password" autocomplete="current-password">
+      </div>
+      <p class="erro" id="erro" role="alert"></p>
+      <button class="btn cheio" id="ok" type="submit">Entrar</button>
+    </form>
+    <p class="mini">Ainda sem conta? Use a aba Criar conta, é grátis.</p>
+  </div>
+</main>
+<script src="auth.js"></script>
+<script>
+var criar=false;
+var $=function(i){return document.getElementById(i)};
+function modo(c){
+  criar=c;
+  $("t-entrar").setAttribute("aria-selected",!c);
+  $("t-criar").setAttribute("aria-selected",c);
+  $("c-nome").hidden=!c;
+  $("ok").textContent=c?"Criar minha conta":"Entrar";
+  $("senha").autocomplete=c?"new-password":"current-password";
+  $("erro").textContent="";
+}
+$("t-entrar").onclick=function(){modo(false)};
+$("t-criar").onclick=function(){modo(true)};
+$("f").onsubmit=function(e){
+  e.preventDefault();
+  var nome=$("nome").value.trim(),email=$("email").value.trim().toLowerCase(),senha=$("senha").value;
+  if(criar&&!nome){$("erro").textContent="Digite seu nome.";return}
+  if(!/^\S+@\S+\.\S+$/.test(email)){$("erro").textContent="Digite um e-mail válido.";return}
+  if(senha.length<6){$("erro").textContent="A senha precisa ter pelo menos 6 caracteres.";return}
+  var antigo=Auth.get();
+  var u=(antigo&&antigo.email===email)?antigo:{email:email,premium:false};
+  if(nome)u.nome=nome;
+  if(!u.nome)u.nome=email.split("@")[0];
+  Auth.set(u);
+  var v=new URLSearchParams(location.search).get("volta");
+  location.href=/^[\w\-]+\.html$/.test(v||"")?v:"index.html";
+};
+Auth.renderAcc($("acc"));
+</script>
+</body>
+</html>
