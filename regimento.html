@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Regimento Interno · Câmara de Cuiabá</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tema.css">
+<style>
+.pg{max-width:1000px}
+.pg h1{font-size:clamp(1.8rem,4.5vw,2.4rem)}
+.pg .sub{margin-bottom:18px}
+.modos{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 14px}
+.modos .btn[aria-pressed="true"]{background:var(--wood);color:#fff6e0}
+.board{position:relative;overflow:hidden;color:#f4f1e6;font-family:"Patrick Hand","Comic Sans MS",cursive;background:radial-gradient(ellipse at 30% 15%,#2f5645,#1b3429 72%);border:10px solid var(--wood);border-radius:8px;padding:clamp(16px,3vw,24px);box-shadow:inset 0 0 40px rgba(0,0,0,.4),0 10px 22px -10px rgba(0,0,0,.45)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 16px}
+.chip{font:inherit;font-size:1.1rem;color:var(--k);background:transparent;border:2px solid var(--k);border-radius:999px;padding:2px 14px 4px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--k);color:#14241c}
+.chip:focus-visible,.op:focus-visible{outline:3px solid #fff;outline-offset:2px}
+.board h2{margin:0 0 12px;font-weight:400;font-size:clamp(1.5rem,3.4vw,2rem)}
+.fato{display:flex;gap:12px;justify-content:space-between;align-items:flex-start;padding:9px 12px;margin:0 0 8px;border-radius:8px;font-size:clamp(1.12rem,2.2vw,1.3rem);line-height:1.3;opacity:0;transform:translateY(5px);transition:opacity .45s,transform .45s,background .3s}
+.fato.on{opacity:1;transform:none}
+.fato.cur{background:rgba(255,226,122,.15);box-shadow:0 0 0 4px rgba(255,226,122,.12)}
+.fato .art{flex:none;font-size:.95rem;color:#14241c;background:var(--k);border-radius:999px;padding:0 10px 1px;white-space:nowrap;margin-top:2px}
+.fato.mac{border:2px dashed rgba(244,241,230,.4);color:#ffe27a}
+.fato.mac .art{background:#ffe27a}
+#ptr{position:absolute;left:0;top:0;width:0;height:0;opacity:0;pointer-events:none;z-index:5;transition:transform .8s cubic-bezier(.4,.1,.2,1),opacity .3s}
+#ptr::before{content:"";position:absolute;left:-7px;top:-7px;width:14px;height:14px;border-radius:50%;background:#ffe27a;box-shadow:0 0 12px 4px rgba(255,226,122,.7)}
+.stick{position:absolute;left:-3px;top:0;width:6px;height:90px;border-radius:3px;background:linear-gradient(#e8c98f,#8a6a45);transform-origin:50% 0;transform:rotate(-38deg);box-shadow:2px 2px 4px rgba(0,0,0,.4)}
+#ptr.flip .stick{transform:rotate(38deg)}
+.pergunta{font-size:clamp(1.3rem,3vw,1.7rem);line-height:1.25;margin:0 0 16px}
+.ops{display:grid;gap:10px}
+.op{font:inherit;font-size:clamp(1.1rem,2.2vw,1.28rem);text-align:left;color:#f4f1e6;background:rgba(255,255,255,.07);border:2px solid rgba(244,241,230,.35);border-radius:10px;padding:10px 14px;cursor:pointer}
+.op:hover:not(:disabled){background:rgba(255,255,255,.13)}
+.op.ok{border-color:#b6f0b1;background:rgba(182,240,177,.18)}
+.op.bad{border-color:#ff9fb2;background:rgba(255,159,178,.16)}
+.fb{margin:14px 0 0;font-size:1.2rem;min-height:1.5em}
+.barra{height:6px;background:var(--line);border-radius:3px;overflow:hidden;margin:14px 0}
+.barra i{display:block;height:100%;width:0;background:var(--wood);transition:width .4s}
+.ctl{display:flex;flex-wrap:wrap;gap:8px}
+.nota{color:var(--muted);font-size:.88rem;margin:18px 0 0;max-width:72ch}
+[hidden]{display:none!important}
+@media (max-width:640px){.fato{flex-direction:column;gap:4px}.stick{height:60px}}
+@media (prefers-reduced-motion:reduce){.fato,#ptr,.barra i{transition:none}}
+</style>
+</head>
+<body>
+<nav class="topo">
+  <a class="marca" href="index.html">Estudo para concursos</a>
+  <div class="acc" id="acc"></div>
+</nav>
+<main class="pg">
+  <h1>Regimento Interno da Câmara de Cuiabá</h1>
+  <p class="sub">Resolução nº 008/2016. Veja os pontos que mais caem e depois teste o que fixou.</p>
+  <div class="modos">
+    <button class="btn" id="mE" type="button" aria-pressed="true">Explorar</button>
+    <button class="btn" id="mT" type="button" aria-pressed="false">Testar-me</button>
+  </div>
+  <div class="board" id="board">
+    <div class="chips" id="chips"></div>
+    <div id="tela"></div>
+    <div id="ptr"><div class="stick"></div></div>
+  </div>
+  <div class="barra"><i id="prog"></i></div>
+  <div class="ctl">
+    <button class="btn" id="voltar" type="button">Voltar</button>
+    <button class="btn cheio" id="avancar" type="button">Avançar</button>
+    <button class="btn" id="tudo" type="button">Mostrar tudo</button>
+    <button class="btn" id="refazer" type="button" hidden>Refazer</button>
+  </div>
+  <p class="nota">Resumo feito a partir do texto do Regimento Interno (2016). Confira sempre a versão vigente e as alterações posteriores, e a bibliografia da sua banca.</p>
+</main>
+<script src="auth.js"></script>
+<script>
+var T=[
+{n:"Funções e legislatura",k:"#8ecbff",f:[
+["Poder Legislativo do Município. Sede na Praça Paschoal Moreira Cabral.","Art. 1º"],
+["7 funções: institucional, legislativa, fiscalizadora, julgadora, administrativa, integrativa e de assessoramento.","Art. 2º"],
+["Legislatura de 4 anos, dividida em 4 sessões legislativas anuais.","Art. 3º"],
+["Sessão legislativa: 2 fev a 17 jul e 1º ago a 22 dez. Só é interrompida depois de aprovada a LDO.","Art. 18"],
+["Posse: 1º de janeiro, às 15h, em sessão preparatória. Quem não tomar posse em 15 dias renuncia, salvo motivo justo.","Arts. 4º e 8º"],
+["Inauguração da legislatura: 2 de fevereiro, às 9h, em sessão solene.","Art. 14"]],
+m:"4 anos e 4 sessões. Posse 1º/1 às 15h. Inauguração 2/2 às 9h."},
+{n:"Mesa Diretora",k:"#ffe27a",f:[
+["Presidente, 1º e 2º Vice-Presidentes, 1º e 2º Secretários.","Art. 21"],
+["Eleição por chapas, voto nominal. Sem maioria, 2º turno entre as duas mais votadas. No empate vence a chapa com o candidato a Presidente mais idoso.","Art. 22"],
+["Renovação em 25 de agosto, posse em 1º de janeiro. Vedada a recondução para o mesmo cargo. Suplente não integra a Mesa.","Art. 23"],
+["Destituição: comportamento desidioso, ineficiente ou uso do cargo para fins ilícitos. Exige 2/3 dos membros da Câmara.","Art. 31"],
+["O Presidente só vota em empate, quórum de 2/3, eleição e destituição da Mesa, perda de mandato e veto.","Art. 36, §2º"],
+["1º Secretário: faz a chamada, lê a ata, assina com o Presidente e cuida das finanças. O 2º Secretário o substitui.","Arts. 40 e 41"]],
+m:"5 cargos. Renovação em 25/8. Destituir exige 2/3."},
+{n:"Comissões",k:"#b6f0b1",f:[
+["Permanentes duram toda a legislatura. Temporárias: Especiais, CPI, Representação e Investigação/Processantes.","Arts. 42 e 44"],
+["São 7 permanentes, entre elas CCJR, Fiscalização e Acompanhamento da Execução Orçamentária e Ética e Decoro Parlamentar.","Art. 43"],
+["Cada uma tem 3 titulares e 3 suplentes. O Colégio de Líderes define presidência e composição.","Art. 48"],
+["A CCJR opina em todas as proposições: aspectos constitucional, legal, regimental e redacional.","Art. 49"],
+["Prazo para parecer: 15 dias úteis. O Presidente da Comissão designa relator em 24 horas.","Arts. 75 e 76"],
+["Perde a vaga quem faltar a 3 reuniões consecutivas. O autor da proposição não pode ser o relator dela.","Arts. 70 e 71"]],
+m:"7 comissões. 3 titulares e 3 suplentes. 15 dias úteis."},
+{n:"Vereadores",k:"#ff9fb2",f:[
+["Agente político com mandato parlamentar para representar o povo.","Art. 88"],
+["Penas por falta de decoro, em gradação: censura, perda temporária do exercício (até 30 dias) e perda do mandato.","Art. 91"],
+["Censura verbal: Presidente. Censura escrita: Mesa. Perda temporária: Plenário, por maioria absoluta, com ampla defesa.","Arts. 92 e 93"],
+["Licença sem remuneração para interesse particular: mínimo de 30 e máximo de 120 dias por sessão legislativa.","Art. 96"],
+["Suplente é convocado em caso de vaga ou licença superior a 30 dias. Sem suplente, há eleição se faltarem mais de 15 meses de mandato.","Art. 97"],
+["Vacância: falecimento, renúncia ou perda de mandato. A renúncia é por escrito, independe de aprovação e vale depois de lida e publicada.","Arts. 98 e 99"]],
+m:"30 dias: licença e suplente. 120 dias: interesse particular. 15 meses: eleição de vaga."},
+{n:"Sessões",k:"#ffb877",f:[
+["Tipos: preparatórias, ordinárias, extraordinárias e solenes.","Art. 113"],
+["Ordinárias: terças e quintas, às 9h, com 3 horas de duração.","Art. 113"],
+["Abre com 1/3 dos vereadores. Sem quórum, espera 30 minutos, prorrogáveis por igual prazo.","Arts. 116 e 121"],
+["Pequeno expediente (9h, 1h), grande expediente (1h), ordem do dia (11h20) e palavra livre. A Ordem do Dia exige maioria absoluta.","Arts. 121 a 126"],
+["Extraordinária: convocada pelo Presidente, pela maioria absoluta ou pelo Prefeito, com 24 horas de antecedência.","Art. 118"],
+["Pauta da Ordem do Dia: urgência especial, urgência simples, vetos, discussão única, 2ª e 1ª discussão, recursos e demais.","Art. 126, §3º"]],
+m:"Terça e quinta, 9h, 3h. Abre com 1/3. Ordem do Dia com maioria absoluta."},
+{n:"Votação e processo",k:"#e0b3ff",f:[
+["Regra geral: maioria de votos, presente a maioria absoluta dos membros.","Art. 175"],
+["Maioria absoluta: lei complementar, cargos e vencimentos, empréstimos, rejeição de veto, leis orçamentárias, convocação de Secretário e comissão especial.","Art. 176"],
+["2/3: alienação de imóveis, denominação de vias, títulos honoríficos, anistia e isenção, Regimento Interno e emenda à Lei Orgânica.","Art. 177"],
+["Veto: o Prefeito tem 15 dias úteis. Silêncio é sanção tácita. O veto só cai por maioria absoluta, em votação nominal.","Art. 150"],
+["Na votação do veto, SIM é a favor do projeto e NÃO é a favor do veto.","Art. 150, §11"],
+["Urgência especial dispensa tudo, menos quórum e pareceres obrigatórios. Urgência simples impede adiamento e pedido de vista.","Art. 151"]],
+m:"Veto cai com maioria absoluta. Regimento e Lei Orgânica mudam com 2/3."}];
+
+/* [tema, pergunta, certa, errada, errada, errada, artigo] */
+var Q=[
+[0,"Qual a duração da legislatura?","4 anos, divididos em 4 sessões legislativas anuais","4 anos, divididos em 2 sessões legislativas","2 anos, divididos em 2 sessões legislativas","5 anos, divididos em 5 sessões legislativas","Art. 3º"],
+[0,"Quando ocorre a sessão preparatória de posse dos vereadores?","Às 15h do dia 1º de janeiro do 1º ano da legislatura","Às 9h do dia 2 de fevereiro","Às 17h do dia 1º de janeiro","Às 15h do dia 2 de fevereiro","Art. 4º"],
+[0,"Qual o prazo para o vereador tomar posse, sob pena de ser considerado renunciante (salvo motivo justo)?","15 dias","10 dias","30 dias","60 dias","Art. 8º, §4º"],
+[0,"A sessão legislativa não pode ser interrompida sem a aprovação de qual projeto?","Lei de Diretrizes Orçamentárias","Lei Orçamentária Anual","Plano Plurianual","Código Tributário","Art. 18, §1º"],
+[1,"Como se compõe a Mesa Diretora?","Presidente, 1º e 2º Vice-Presidentes, 1º e 2º Secretários","Presidente, Vice-Presidente e três Secretários","Presidente, 1º Vice-Presidente e 1º e 2º Secretários","Presidente, 1º e 2º Vice-Presidentes, Tesoureiro e Secretário","Art. 21"],
+[1,"Em que data ocorre a eleição para renovar a Mesa Diretora?","25 de agosto","2 de fevereiro","1º de janeiro","15 de dezembro","Art. 23"],
+[1,"Qual o quórum para destituir um membro da Mesa?","2/3 dos membros da Câmara","Maioria absoluta","Maioria simples","3/5 dos membros","Art. 31"],
+[1,"Na renovação da Mesa, o que o Regimento veda?","Recondução para o mesmo cargo","Voto nominal","Eleição por chapas","Candidatura de vice-presidente","Art. 23, §2º"],
+[2,"Quantas são as Comissões Permanentes?","7","5","6","9","Art. 43"],
+[2,"Como são compostas as Comissões Permanentes?","3 titulares e 3 suplentes","5 titulares e 5 suplentes","3 titulares e 2 suplentes","7 titulares e 3 suplentes","Art. 48, §1º"],
+[2,"Qual o prazo para uma Comissão Permanente se pronunciar?","15 dias úteis","10 dias corridos","30 dias","48 horas","Art. 75"],
+[2,"Perde o lugar na Comissão o vereador que faltar a quantas reuniões?","3 consecutivas","2 consecutivas","5 consecutivas","3 alternadas no mês","Art. 70, §2º"],
+[2,"Qual comissão opina sobre os aspectos constitucional, legal, regimental e redacional de todas as proposições?","Constituição, Justiça e Redação","Ética e Decoro Parlamentar","Fiscalização e Acompanhamento da Execução Orçamentária","Defesa do Consumidor e Direitos Humanos","Art. 49"],
+[3,"Qual a ordem de gradação das penalidades por falta de decoro?","Censura, perda temporária do exercício e perda do mandato","Perda temporária do exercício, censura e perda do mandato","Advertência, multa e perda do mandato","Censura, suspensão por 60 dias e perda do mandato","Art. 91"],
+[3,"Como é a licença do vereador para tratar de interesse particular?","Sem remuneração, de 30 a 120 dias por sessão legislativa","Com remuneração, até 120 dias","Sem remuneração, até 30 dias","Sem remuneração, de 15 a 90 dias","Art. 96"],
+[3,"Quando o suplente é convocado em caso de licença do titular?","Quando a licença for superior a 30 dias","Em qualquer licença","Quando for superior a 15 dias","Quando for superior a 120 dias","Art. 97"],
+[3,"Sobre a renúncia de vereador, está correto afirmar que:","Independe de aprovação da Câmara e vale depois de lida e publicada","Depende de aprovação por maioria absoluta","Depende de aprovação por 2/3","Vale ao protocolar e pode ser retirada depois","Art. 99"],
+[4,"Quando ocorrem as sessões ordinárias?","Terças e quintas, às 9h, por 3 horas","Segundas e quartas, às 9h, por 3 horas","Terças e quintas, às 14h, por 3 horas","Terças e quintas, às 9h, por 4 horas","Art. 113"],
+[4,"Qual a presença mínima para abrir a sessão?","1/3 dos vereadores","Maioria absoluta","Metade dos vereadores","2/3 dos vereadores","Arts. 116 e 121"],
+[4,"Qual matéria vem primeiro na pauta da Ordem do Dia?","Urgência especial","Vetos","Primeira discussão","Recursos","Art. 126, §3º"],
+[4,"Quem pode convocar sessão extraordinária?","O Presidente, a maioria absoluta dos membros ou o Prefeito","Apenas o Presidente","Somente o Prefeito","Qualquer vereador","Art. 118"],
+[5,"Qual a regra geral de votação?","Maioria de votos, presente a maioria absoluta dos membros","2/3 dos membros","Maioria absoluta dos membros","Unanimidade dos presentes","Art. 175"],
+[5,"Qual destas matérias exige maioria absoluta?","Rejeição de veto","Alienação de bens imóveis","Alteração do Regimento Interno","Denominação de vias públicas","Art. 176"],
+[5,"Qual destas matérias exige 2/3?","Alteração do Regimento Interno","Criação de cargos","Leis orçamentárias","Empréstimos","Art. 177"],
+[5,"Qual o prazo do Prefeito para vetar um projeto, e o que significa o silêncio?","15 dias úteis; sanção tácita","30 dias; veto tácito","10 dias úteis; sanção tácita","48 horas; veto tácito","Art. 150"],
+[5,"Qual urgência dispensa todas as exigências, exceto quórum e pareceres obrigatórios?","Urgência especial","Urgência simples","As duas","Nenhuma","Art. 151, §1º"]];
+
+var $=function(i){return document.getElementById(i)};
+var mode="e",ti=0,si=-1,filtro=-1,qs=[],qi=0,sc=0,ans=false,opts=[];
+function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t}return a}
+function cor(){var c=ti>=0&&mode==="e"?T[ti].k:(filtro>=0?T[filtro].k:"#ffe27a");$("board").style.setProperty("--k",c)}
+
+function chips(){
+  var h="";
+  if(mode==="t")h+='<button class="chip" style="--k:#f4f1e6" data-t="-1" aria-pressed="'+(filtro<0)+'">Todas</button>';
+  T.forEach(function(t,k){
+    var on=mode==="e"?k===ti:k===filtro;
+    h+='<button class="chip" style="--k:'+t.k+'" data-t="'+k+'" aria-pressed="'+on+'">'+t.n+'</button>';
+  });
+  $("chips").innerHTML=h;
+  [].forEach.call($("chips").children,function(b){b.onclick=function(){
+    var k=parseInt(b.getAttribute("data-t"),10);
+    if(mode==="e"){ti=k;si=-1;drawE()}else{filtro=k;startQ()}
+    chips();
+  }});
+}
+
+/* ---- Explorar ---- */
+function drawE(){
+  var t=T[ti],f=t.f.concat([[t.m,"Macete"]]);
+  cor();
+  $("tela").innerHTML='<h2 style="color:'+t.k+'">'+t.n+'</h2>'+f.map(function(x,k){
+    return '<div class="fato'+(k===f.length-1?" mac":"")+'" id="f'+k+'" style="--k:'+(k===f.length-1?"#ffe27a":t.k)+'"><span class="tx">'+x[0]+'</span><span class="art">'+x[1]+'</span></div>';
+  }).join("");
+  reveal();
+}
+function reveal(){
+  var n=T[ti].f.length+1;
+  for(var k=0;k<n;k++){var e=$("f"+k);e.classList.toggle("on",k<=si);e.classList.toggle("cur",k===si)}
+  $("prog").style.width=((si+1)/n*100)+"%";
+  $("voltar").disabled=si<0;
+  $("avancar").textContent=si>=n-1?(ti<T.length-1?"Próximo tema":"Fim"):"Avançar";
+  $("avancar").disabled=(si>=n-1&&ti>=T.length-1);
+  movePtr();
+}
+function movePtr(){
+  var p=$("ptr");
+  if(mode!=="e"||si<0){p.style.opacity=0;return}
+  var b=$("board").getBoundingClientRect(),r=$("f"+si).querySelector(".tx").getBoundingClientRect();
+  var x=r.left-b.left+Math.min(r.width*.55,r.width-10),y=r.top-b.top+r.height/2;
+  p.classList.toggle("flip",x>b.width*.55);
+  p.style.opacity=1;p.style.transform="translate("+x+"px,"+y+"px)";
+}
+
+/* ---- Testar ---- */
+function startQ(){
+  qs=shuffle(Q.filter(function(q){return filtro<0||q[0]===filtro}));
+  qi=0;sc=0;ans=false;cor();drawQ();
+}
+function drawQ(){
+  var tela=$("tela");
+  $("prog").style.width=(qi/qs.length*100)+"%";
+  $("avancar").hidden=true;$("voltar").hidden=true;$("tudo").hidden=true;
+  $("refazer").hidden=false;
+  if(qi>=qs.length){
+    tela.innerHTML='<p class="pergunta">Fim! Você acertou '+sc+' de '+qs.length+'.</p><p class="fb">'+(sc===qs.length?"Nota máxima. Pode seguir para outro tema.":"Volte ao modo Explorar nos temas em que errou e refaça.")+'</p>';
+    return;
+  }
+  var q=qs[qi];ans=false;opts=shuffle(q.slice(2,6));
+  tela.innerHTML='<p class="pergunta">'+(qi+1)+'/'+qs.length+'. '+q[1]+'</p><div class="ops">'+opts.map(function(o,k){return '<button class="op" data-k="'+k+'">'+o+'</button>'}).join("")+'</div><p class="fb" id="fb" aria-live="polite"></p><button class="btn cheio" id="prox" type="button" hidden>'+(qi<qs.length-1?"Próxima":"Ver resultado")+'</button>';
+  [].forEach.call(tela.querySelectorAll(".op"),function(b){b.onclick=function(){responder(b)}});
+  $("prox").onclick=function(){qi++;drawQ()};
+}
+function responder(b){
+  if(ans)return;ans=true;
+  var q=qs[qi],certo=opts[parseInt(b.getAttribute("data-k"),10)]===q[2];
+  if(certo)sc++;
+  [].forEach.call(document.querySelectorAll(".op"),function(x){
+    x.disabled=true;
+    if(x.textContent===q[2])x.classList.add("ok");
+  });
+  if(!certo)b.classList.add("bad");
+  $("fb").textContent=(certo?"Certo! ":"Não foi essa. ")+q[6]+".";
+  $("prox").hidden=false;$("prox").focus();
+}
+
+/* ---- modos e botões ---- */
+function setMode(m){
+  mode=m;
+  $("mE").setAttribute("aria-pressed",m==="e");$("mT").setAttribute("aria-pressed",m==="t");
+  $("avancar").hidden=$("voltar").hidden=$("tudo").hidden=(m==="t");
+  $("refazer").hidden=(m==="e");
+  $("avancar").disabled=false;
+  chips();
+  if(m==="e"){si=-1;drawE()}else{startQ()}
+}
+$("mE").onclick=function(){setMode("e")};
+$("mT").onclick=function(){setMode("t")};
+$("avancar").onclick=function(){
+  var n=T[ti].f.length+1;
+  if(si>=n-1){if(ti<T.length-1){ti++;si=-1;chips();drawE()}return}
+  si++;reveal();
+};
+$("voltar").onclick=function(){if(si>=0){si--;reveal()}};
+$("tudo").onclick=function(){si=T[ti].f.length;reveal()};
+$("refazer").onclick=startQ;
+addEventListener("resize",movePtr);
+Auth.renderAcc($("acc"));
+chips();drawE();
+</script>
+</body>
+</html>
