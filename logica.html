@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lousa: Conectivos e Tabela-Verdade</title>
+<link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
+<style>
+:root{--board:#2f4f3e;--board2:#27443a;--chalk:#f2f0e6;--dim:#c9d4c4;--yellow:#f3d46b;--pink:#f2a1a1;--blue:#a9d6f0;--wood:#8a5a33;--wood2:#6b4423}
+*{box-sizing:border-box}
+body{margin:0;background:#e9e2d4;font-family:"Patrick Hand","Comic Sans MS",cursive;color:var(--chalk);padding:20px 12px}
+.frame{max-width:860px;margin:0 auto;border:16px solid var(--wood);border-image:none;border-radius:6px;box-shadow:inset 0 0 0 3px var(--wood2),0 6px 18px rgba(0,0,0,.25);background:radial-gradient(ellipse at top,var(--board),var(--board2));padding:26px 22px 34px}
+h1{margin:0 0 4px;font-size:2rem;font-weight:400;color:var(--yellow)}
+h2{margin:26px 0 8px;font-size:1.45rem;font-weight:400;color:var(--blue);border-bottom:2px dashed rgba(242,240,230,.35);padding-bottom:4px}
+p,li{font-size:1.15rem;line-height:1.5;margin:6px 0}
+.sub{color:var(--dim);margin:0}
+table{border-collapse:collapse;width:100%;margin:8px 0}
+th,td{border:2px solid rgba(242,240,230,.5);padding:6px 10px;text-align:center;font-size:1.1rem}
+th{color:var(--yellow);font-weight:400}
+.tableWrap{overflow-x:auto}
+.v{color:var(--blue)}.f{color:var(--pink)}
+.vera{background:rgba(243,212,107,.18)}
+.box{border:2px dashed var(--yellow);border-radius:10px;padding:10px 14px;margin:12px 0}
+.kiko{float:right;font-size:2.4rem;margin:0 0 0 10px}
+.ctl{display:flex;gap:14px;flex-wrap:wrap;margin:10px 0}
+.ctl div{border:2px solid rgba(242,240,230,.5);border-radius:10px;padding:8px 12px;flex:1;min-width:210px}
+button{font-family:inherit;font-size:1.1rem;background:transparent;color:var(--chalk);border:2px solid var(--chalk);border-radius:8px;padding:4px 14px;cursor:pointer;margin:4px 6px 0 0}
+button[aria-pressed="true"]{background:var(--chalk);color:var(--board2)}
+button:focus-visible{outline:3px solid var(--yellow);outline-offset:2px}
+.res{font-size:1.5rem}
+.opt{display:block;width:100%;text-align:left;margin:6px 0}
+#fb{min-height:1.6em;font-size:1.2rem;margin-top:8px}
+</style>
+</head>
+<body>
+<main class="frame">
+  <span class="kiko" aria-hidden="true">🐶</span>
+  <h1>Conectivos e tabela-verdade</h1>
+  <p class="sub">Raciocínio Lógico · Câmara de Cuiabá</p>
+
+  <h2>1. Os cinco conectivos</h2>
+  <div class="tableWrap">
+  <table>
+    <tr><th>Conectivo</th><th>Símbolo</th><th>É V quando…</th><th>Macete</th></tr>
+    <tr><td>E</td><td>p ∧ q</td><td>os dois são V</td><td>basta um F e dá F</td></tr>
+    <tr><td>OU</td><td>p ∨ q</td><td>pelo menos um é V</td><td>só dá F se os dois forem F</td></tr>
+    <tr><td>OU…OU</td><td>p ⊻ q</td><td>são diferentes</td><td>V e F, ou F e V</td></tr>
+    <tr class="vera"><td>SE…ENTÃO</td><td>p → q</td><td>sempre, menos V → F</td><td>Vera Fischer</td></tr>
+    <tr><td>SE E SOMENTE SE</td><td>p ↔ q</td><td>são iguais</td><td>V e V, ou F e F</td></tr>
+  </table>
+  </div>
+
+  <h2>2. Vera Fischer</h2>
+  <div class="box">
+    <p><b>V → F = F.</b> O “se…então” só é falso quando a primeira parte é verdadeira e a segunda é falsa. Nos outros três casos é verdadeiro.</p>
+  </div>
+
+  <h2>3. Argumento válido</h2>
+  <ol>
+    <li>Considere <b>todas as premissas V</b>.</li>
+    <li>Descubra o valor de cada letra, começando pela premissa mais simples.</li>
+    <li>Teste a conclusão. Deu V: <b>válido</b>. Deu F: <b>inválido</b>.</li>
+  </ol>
+
+  <h2>4. Teste você mesmo</h2>
+  <p class="sub">Escolha os valores e veja o resultado de cada conectivo.</p>
+  <div class="ctl">
+    <div>Q: Valéria estuda todos os dias<br>
+      <button data-k="q" data-v="1" aria-pressed="true">V</button><button data-k="q" data-v="0" aria-pressed="false">F</button></div>
+    <div>P: Dilma ganha bem<br>
+      <button data-k="p" data-v="1" aria-pressed="false">V</button><button data-k="p" data-v="0" aria-pressed="true">F</button></div>
+  </div>
+  <div class="tableWrap">
+  <table id="out"></table>
+  </div>
+
+  <h2>5. Fixação</h2>
+  <p id="qtext"></p>
+  <div id="opts"></div>
+  <div id="fb" aria-live="polite"></div>
+  <button id="next">Próxima</button>
+</main>
+
+<script>
+(function(){
+  var st={q:1,p:0};
+  var ops=[
+    ["E (q ∧ p)",function(a,b){return a&&b}],
+    ["OU (q ∨ p)",function(a,b){return a||b}],
+    ["OU…OU (q ⊻ p)",function(a,b){return a!==b}],
+    ["SE…ENTÃO (q → p)",function(a,b){return !(a&&!b)}],
+    ["SE E SOMENTE SE (q ↔ p)",function(a,b){return a===b}]
+  ];
+  function L(x){return x?'<span class="v">V</span>':'<span class="f">F</span>'}
+  function render(){
+    var a=!!st.q,b=!!st.p,h='<tr><th>Conectivo</th><th>Resultado</th></tr>';
+    ops.forEach(function(o,i){
+      var vera=(i===3&&a&&!b)?' class="vera"':'';
+      h+='<tr'+vera+'><td>'+o[0]+'</td><td class="res">'+L(o[1](a,b))+(vera?' &nbsp;Vera Fischer!':'')+'</td></tr>';
+    });
+    document.getElementById('out').innerHTML=h;
+  }
+  document.querySelectorAll('.ctl button').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var k=btn.dataset.k;st[k]=+btn.dataset.v;
+      document.querySelectorAll('.ctl button[data-k="'+k+'"]').forEach(function(x){x.setAttribute('aria-pressed',x===btn?'true':'false')});
+      render();
+    });
+  });
+  render();
+
+  var qs=[
+    {t:"Dado V → F, qual o resultado do SE…ENTÃO?",o:["V","F"],a:1,e:"Vera Fischer: V → F é falso."},
+    {t:"F → V dá…",o:["V","F"],a:0,e:"Só V → F é falso. F → V é verdadeiro."},
+    {t:"V ou F dá…",o:["V","F"],a:0,e:"No OU basta um V."},
+    {t:"V e F dá…",o:["V","F"],a:1,e:"No E os dois precisam ser V."},
+    {t:"F ou F (OU…OU exclusivo) dá…",o:["V","F"],a:1,e:"O exclusivo pede valores diferentes. Iguais dá F."},
+    {t:"F ↔ F (se e somente se) dá…",o:["V","F"],a:0,e:"No bicondicional, valores iguais dão V."},
+    {t:"Se Q é V e P é F, qual conectivo dá V?",o:["E","OU","SE…ENTÃO","SE E SOMENTE SE"],a:1,e:"Só o OU dá V com V e F."}
+  ];
+  var i=-1,done=false;
+  function ask(){
+    i=(i+1)%qs.length;done=false;
+    var q=qs[i];
+    document.getElementById('qtext').textContent=q.t;
+    document.getElementById('fb').textContent='';
+    var box=document.getElementById('opts');box.innerHTML='';
+    q.o.forEach(function(txt,j){
+      var b=document.createElement('button');b.className='opt';b.textContent=txt;
+      b.addEventListener('click',function(){
+        if(done)return;done=true;
+        document.getElementById('fb').innerHTML=(j===q.a?'✔ Certo! ':'✘ Quase. ')+q.e;
+      });
+      box.appendChild(b);
+    });
+  }
+  document.getElementById('next').addEventListener('click',ask);
+  ask();
+})();
+</script>
+</body>
+</html>
